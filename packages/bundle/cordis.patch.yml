@@ -9,7 +9,7 @@
 
 - insert:
     - id: workbench-layout
-      name: ethan-workbench-layout
+      name: ethan-workbench/layout
 
     - id: workbench-ui
-      name: ethan-workbench-ui
+      name: ethan-workbench/ui

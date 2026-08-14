@@ -10,12 +10,12 @@ importers:
 
   packages/bundle:
     dependencies:
-      ethan-workbench-layout:
-        specifier: workspace:0.1.0
-        version: link:../layout
-      ethan-workbench-ui:
-        specifier: workspace:0.1.0
-        version: link:../ui
+      mammoth:
+        specifier: ^1.10.0
+        version: 1.12.1
+      xlsx:
+        specifier: ^0.18.5
+        version: 0.18.5
 
   packages/layout:
     dependencies:
