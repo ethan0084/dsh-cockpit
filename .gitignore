@@ -5,3 +5,4 @@ dist/
 *.tgz
 .tmp-dsh.*
 .local-test-*
+packages/bundle/embedded/
