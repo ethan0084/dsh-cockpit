@@ -1,0 +1,15 @@
+# Disable the stock shell before loading the workbench shell.
+- id: ui-layout
+  disabled: true
+
+# The stock workspace surface is a session browser; this plugin owns the
+# workspace slot and moves session switching into the conversation header.
+- id: ui-workspace
+  disabled: true
+
+- insert:
+    - id: workbench-layout
+      name: deepseek-harness-workbench-layout
+
+    - id: workbench-ui
+      name: deepseek-harness-workbench-ui

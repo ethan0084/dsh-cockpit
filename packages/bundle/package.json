@@ -1,0 +1,35 @@
+{
+  "name": "deepseek-harness-workbench",
+  "version": "0.1.0",
+  "description": "A desktop-style project and AI workbench for DeepSeek Harness",
+  "keywords": [
+    "deepseek-harness",
+    "dsh-plugin",
+    "cordis",
+    "workbench"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/index.js",
+    "cordis.patch.yml"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "dependencies": {
+    "deepseek-harness-workbench-layout": "workspace:0.1.0",
+    "deepseek-harness-workbench-ui": "workspace:0.1.0"
+  }
+}
