@@ -17,7 +17,7 @@
 
 ## 安装
 
-发布到 npm 后，只需要安装入口包：
+已发布到 npm，只需要安装一个入口包：
 
 ```bash
 dsh plugin --profile web add ethan-workbench
@@ -27,20 +27,22 @@ dsh plugin --profile web add ethan-workbench
 
 ```bash
 pnpm install
-dsh plugin --profile web add ./packages/layout
-dsh plugin --profile web add ./packages/ui
-dsh --profile web --patch "$PWD/packages/bundle/cordis.patch.yml"
+pnpm test
+pnpm run pack:release
+dsh plugin --profile web add "$PWD/dist/ethan-workbench-0.1.1.tgz"
+dsh --profile web
 ```
 
-最后一条命令会用临时配置层启动工作台。正式发布到 npm 后，安装入口包即可永久写入 profile。若已有同类自定义布局，请先备份配置，避免两个布局同时启用。
+安装命令会把 Cordis 配置层永久写入 `web` profile。若已有同类自定义布局，请先备份配置，避免两个布局同时启用。
 
 ## 项目结构
 
-- `packages/bundle`：统一安装入口和 Cordis 配置层
-- `packages/layout`：三栏工作台布局，替换 DSH 默认布局
-- `packages/ui`：项目、文件、预览、上下文和历史会话界面
+- `packages/bundle`：唯一发布入口、Cordis 配置层和打包后的内嵌组件
+- `packages/layout`：三栏工作台布局源码，替换 DSH 默认布局
+- `packages/ui`：项目、文件、预览、上下文和历史会话源码
+- `scripts/build-bundle.mjs`：发布前把布局与界面源码组装进入口包
 
-之所以拆成三个 npm 包，是因为 DSH 的每个浏览器插件都有独立的 `dsh.client` 清单；对使用者仍然只暴露一个入口包。
+从 `0.1.1` 起只发布 `ethan-workbench`。布局和界面通过 `ethan-workbench/layout`、`ethan-workbench/ui` 子路径内嵌在同一个 npm 包中，避免 pnpm 隔离依赖导致 DSH 无法加载组件。
 
 ## 开发与验证
 
@@ -61,4 +63,4 @@ pnpm test
 
 欢迎提交 Issue 和 Pull Request。提交贡献即表示你有权提交这些代码，并同意以 MIT License 发布。详见 [CONTRIBUTING.md](./CONTRIBUTING.md)。
 
-维护者发布新版本时请按 [RELEASING.md](./RELEASING.md) 的顺序发布三个包。
+维护者发布新版本时请按 [RELEASING.md](./RELEASING.md) 打包、发布并完成全新 profile 验证。
