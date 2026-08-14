@@ -9,7 +9,7 @@
 
 - insert:
     - id: workbench-layout
-      name: deepseek-harness-workbench-layout
+      name: ethan-workbench-layout
 
     - id: workbench-ui
-      name: deepseek-harness-workbench-ui
+      name: ethan-workbench-ui

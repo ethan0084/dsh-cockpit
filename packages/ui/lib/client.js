@@ -1,6 +1,6 @@
-/* DSH Workbench UI. Copyright (C) 2026 Ethan. MIT License. */
+/* Ethan Workbench UI. Copyright (C) 2026 Ethan. MIT License. */
 window.__ModuleLoader__.load({
-  id: "deepseek-harness-workbench-ui",
+  id: "ethan-workbench-ui",
   factory: (require) => {
     const module = { exports: {} };
     const exports = module.exports;
@@ -41,10 +41,10 @@ window.__ModuleLoader__.load({
       .dwu-historyButton:disabled{opacity:.45;cursor:default;transform:none}
       @media (prefers-reduced-motion:reduce){.dwu-projectButton:active,.dwu-addProject:active,.dwu-iconButton:active,.dwu-projectPickerAction:active,.dwu-projectPickerRow:active,.dwu-historyButton:active,.dwu-newChatButton:active{transform:none}}
     `;
-    const styleId = "deepseek-harness-workbench-ui/styles";
+    const styleId = "ethan-workbench-ui/styles";
     if (document.querySelector(`style[data-plugin-css=${JSON.stringify(styleId)}]`) === null) {
       const tag = document.createElement("style");
-      tag.dataset.plugin = "deepseek-harness-workbench-ui";
+      tag.dataset.plugin = "ethan-workbench-ui";
       tag.dataset.pluginCss = styleId;
       tag.textContent = css;
       document.head.appendChild(tag);

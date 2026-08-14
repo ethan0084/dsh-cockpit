@@ -10,10 +10,10 @@ importers:
 
   packages/bundle:
     dependencies:
-      deepseek-harness-workbench-layout:
+      ethan-workbench-layout:
         specifier: workspace:0.1.0
         version: link:../layout
-      deepseek-harness-workbench-ui:
+      ethan-workbench-ui:
         specifier: workspace:0.1.0
         version: link:../ui
 

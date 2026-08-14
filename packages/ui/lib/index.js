@@ -1,4 +1,4 @@
-/* DSH Workbench UI. Copyright (C) 2026 Ethan. MIT License. */
+/* Ethan Workbench UI. Copyright (C) 2026 Ethan. MIT License. */
 import { promises as fs, createReadStream, createWriteStream, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -15,12 +15,12 @@ const MAX_BODY_BYTES = 14 * 1024 * 1024;
 const CLIENT_PATH = fileURLToPath(new URL("./client.js", import.meta.url));
 const CLIENT_REV = createHash("sha1").update(readFileSync(CLIENT_PATH)).digest("hex").slice(0, 12);
 const CLIENT_ENTRY = {
-  id: "deepseek-harness-workbench-ui",
+  id: "ethan-workbench-ui",
   url: `/dsh-workspace/client.js?rev=${CLIENT_REV}`,
   rev: CLIENT_REV,
   inject: [
     "@deepseek-ai/dsh-client-runtime",
-    "deepseek-harness-workbench-layout",
+    "ethan-workbench-layout",
     "@deepseek-ai/dsh-client-ui-conversation"
   ]
 };
@@ -349,5 +349,5 @@ export function apply(ctx) {
       disposeAsset();
       disposeApi();
     };
-  }, "deepseek-harness-workbench-ui routes");
+  }, "ethan-workbench-ui routes");
 }

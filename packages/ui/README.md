@@ -1,3 +1,3 @@
-# deepseek-harness-workbench-ui
+# ethan-workbench-ui
 
-Internal workbench surface for [DSH Workbench](../../README.md). Install the `deepseek-harness-workbench` bundle instead of this package directly.
+Internal workbench surface for [Ethan Workbench](../../README.md). Install the `ethan-workbench` bundle instead of this package directly.

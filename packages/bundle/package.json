@@ -1,5 +1,5 @@
 {
-  "name": "deepseek-harness-workbench",
+  "name": "ethan-workbench",
   "version": "0.1.0",
   "description": "A desktop-style project and AI workbench for DeepSeek Harness",
   "keywords": [
@@ -11,6 +11,15 @@
   "license": "MIT",
   "publishConfig": {
     "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ethan0084/ethan-workbench.git",
+    "directory": "packages/bundle"
+  },
+  "homepage": "https://github.com/ethan0084/ethan-workbench#readme",
+  "bugs": {
+    "url": "https://github.com/ethan0084/ethan-workbench/issues"
   },
   "type": "module",
   "main": "lib/index.js",
@@ -29,7 +38,7 @@
     }
   },
   "dependencies": {
-    "deepseek-harness-workbench-layout": "workspace:0.1.0",
-    "deepseek-harness-workbench-ui": "workspace:0.1.0"
+    "ethan-workbench-layout": "workspace:0.1.0",
+    "ethan-workbench-ui": "workspace:0.1.0"
   }
 }

@@ -1,9 +1,17 @@
 {
-  "name": "dsh-workbench-source",
+  "name": "ethan-workbench-source",
   "version": "0.1.0",
   "private": true,
-  "description": "Monorepo for the DSH Workbench Cordis plugin bundle",
+  "description": "Monorepo for the Ethan Workbench Cordis plugin bundle",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ethan0084/ethan-workbench.git"
+  },
+  "homepage": "https://github.com/ethan0084/ethan-workbench#readme",
+  "bugs": {
+    "url": "https://github.com/ethan0084/ethan-workbench/issues"
+  },
   "type": "module",
   "packageManager": "pnpm@11.19.0",
   "workspaces": [
@@ -11,7 +19,7 @@
   ],
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "pack:all": "mkdir -p dist && pnpm --filter deepseek-harness-workbench-layout pack --pack-destination dist && pnpm --filter deepseek-harness-workbench-ui pack --pack-destination dist && pnpm --filter deepseek-harness-workbench pack --pack-destination dist"
+    "pack:all": "mkdir -p dist && pnpm --filter ethan-workbench-layout pack --pack-destination dist && pnpm --filter ethan-workbench-ui pack --pack-destination dist && pnpm --filter ethan-workbench pack --pack-destination dist"
   },
   "engines": {
     "node": ">=22"

@@ -20,8 +20,8 @@ test("bundle replaces the layout and disables the stock workspace", async () => 
   const patch = await read("packages/bundle/cordis.patch.yml");
   assert.match(patch, /id: ui-layout\n\s+disabled: true/);
   assert.match(patch, /id: ui-workspace\n\s+disabled: true/);
-  assert.match(patch, /id: workbench-layout\n\s+name: deepseek-harness-workbench-layout/);
-  assert.match(patch, /id: workbench-ui\n\s+name: deepseek-harness-workbench-ui/);
+  assert.match(patch, /id: workbench-layout\n\s+name: ethan-workbench-layout/);
+  assert.match(patch, /id: workbench-ui\n\s+name: ethan-workbench-ui/);
 });
 
 test("client module ids and injection names agree with manifests", async () => {
@@ -29,10 +29,10 @@ test("client module ids and injection names agree with manifests", async () => {
   const uiClient = await read("packages/ui/lib/client.js");
   const uiHost = await read("packages/ui/lib/index.js");
   const uiManifest = await json("packages/ui/package.json");
-  assert.match(layoutClient, /id: "deepseek-harness-workbench-layout"/);
-  assert.match(uiClient, /id: "deepseek-harness-workbench-ui"/);
-  assert.match(uiHost, /id: "deepseek-harness-workbench-ui"/);
-  assert.ok(uiManifest.dsh.client.inject.includes("deepseek-harness-workbench-layout"));
+  assert.match(layoutClient, /id: "ethan-workbench-layout"/);
+  assert.match(uiClient, /id: "ethan-workbench-ui"/);
+  assert.match(uiHost, /id: "ethan-workbench-ui"/);
+  assert.ok(uiManifest.dsh.client.inject.includes("ethan-workbench-layout"));
 });
 
 test("published source contains no local user paths or obvious secrets", async () => {

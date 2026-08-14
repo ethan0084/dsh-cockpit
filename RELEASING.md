@@ -15,9 +15,9 @@ pnpm run pack:all
 ## npm 发布顺序
 
 ```bash
-pnpm --filter deepseek-harness-workbench-layout publish --no-git-checks
-pnpm --filter deepseek-harness-workbench-ui publish --no-git-checks
-pnpm --filter deepseek-harness-workbench publish --no-git-checks
+pnpm --filter ethan-workbench-layout publish --no-git-checks
+pnpm --filter ethan-workbench-ui publish --no-git-checks
+pnpm --filter ethan-workbench publish --no-git-checks
 ```
 
 入口包依赖前两个组件，因此必须最后发布。首次正式发布前，再次确认三个 npm 名称仍然可用；查询结果不等于名称预留。
@@ -27,7 +27,7 @@ pnpm --filter deepseek-harness-workbench publish --no-git-checks
 在新的 DSH profile 中运行：
 
 ```bash
-dsh plugin --profile web add deepseek-harness-workbench
+dsh plugin --profile web add ethan-workbench
 dsh --profile web --dump-config
 ```
 

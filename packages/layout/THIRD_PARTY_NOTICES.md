@@ -2,7 +2,7 @@
 
 ## DeepSeek Harness
 
-The `dsh-workbench-layout` component is based on and modifies the
+The `ethan-workbench-layout` component is based on and modifies the
 `@deepseek-ai/dsh-client-ui-layout` component from DeepSeek Harness.
 
 Source: <https://github.com/deepseek-ai/deepseek-harness>

@@ -1,4 +1,4 @@
-# DSH Workbench
+# Ethan Workbench
 
 把 DeepSeek Harness 改造成桌面式项目工作台：左侧项目与文件树，中间文件编辑/预览，右侧保留 AI 对话。
 
@@ -20,7 +20,7 @@
 发布到 npm 后，只需要安装入口包：
 
 ```bash
-dsh plugin --profile web add deepseek-harness-workbench
+dsh plugin --profile web add ethan-workbench
 ```
 
 从源码本地试用：
