@@ -1,0 +1,4 @@
+interface:
+  display_name: "DSH Cockpit 安装"
+  short_description: "Install DSH and DSH Cockpit from public npm packages"
+  default_prompt: "Use $dsh-cockpit-install to install and verify DSH with DSH Cockpit."

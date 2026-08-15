@@ -1,6 +1,6 @@
 {
-  "name": "ethan-workbench",
-  "version": "0.1.1",
+  "name": "dsh-cockpit",
+  "version": "0.2.0",
   "description": "A desktop-style project and AI workbench for DeepSeek Harness",
   "keywords": [
     "deepseek-harness",
@@ -14,12 +14,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ethan0084/ethan-workbench.git",
+    "url": "git+https://github.com/ethan0084/dsh-cockpit.git",
     "directory": "packages/bundle"
   },
-  "homepage": "https://github.com/ethan0084/ethan-workbench#readme",
+  "homepage": "https://github.com/ethan0084/dsh-cockpit#readme",
   "bugs": {
-    "url": "https://github.com/ethan0084/ethan-workbench/issues"
+    "url": "https://github.com/ethan0084/dsh-cockpit/issues"
   },
   "type": "module",
   "main": "lib/index.js",

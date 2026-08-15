@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a reproducible problem in DSH Workbench
+description: Report a reproducible problem in DSH Cockpit
 title: "[Bug]: "
 labels: [bug]
 body:

@@ -1,7 +1,7 @@
-# ethan-workbench-layout
+# dsh-cockpit-layout
 
-Internal browser layout component for [Ethan Workbench](../../README.md). Install the `ethan-workbench` bundle instead of this package directly.
+Internal browser layout component for [DSH Cockpit](../../README.md). Install the `dsh-cockpit` bundle instead of this package directly.
 
-From Ethan Workbench `0.1.1`, this source is embedded into the main package as `ethan-workbench/layout` during release and is not published separately.
+In DSH Cockpit `0.2.0`, this source is embedded into the main package as `dsh-cockpit/layout` during release and is not published separately.
 
 This component modifies DeepSeek Harness's MIT-licensed `ui-layout`; see `THIRD_PARTY_NOTICES.md`.

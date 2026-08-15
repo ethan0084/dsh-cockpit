@@ -19,25 +19,25 @@ await cp(path.join(root, "packages/layout/lib/index.js"), path.join(embedded, "l
 await copyWithIds(
   path.join(root, "packages/layout/lib/client.js"),
   path.join(embedded, "layout/client.js"),
-  [["id: \"ethan-workbench-layout\"", "id: \"ethan-workbench/layout\""]],
+  [["id: \"dsh-cockpit-layout\"", "id: \"dsh-cockpit/layout\""]],
 );
 
 await copyWithIds(
   path.join(root, "packages/ui/lib/index.js"),
   path.join(embedded, "ui/index.js"),
   [
-    ["id: \"ethan-workbench-ui\"", "id: \"ethan-workbench/ui\""],
-    ["\"ethan-workbench-layout\"", "\"ethan-workbench/layout\""],
+    ["id: \"dsh-cockpit-ui\"", "id: \"dsh-cockpit/ui\""],
+    ["\"dsh-cockpit-layout\"", "\"dsh-cockpit/layout\""],
   ],
 );
 await copyWithIds(
   path.join(root, "packages/ui/lib/client.js"),
   path.join(embedded, "ui/client.js"),
-  [["id: \"ethan-workbench-ui\"", "id: \"ethan-workbench/ui\""]],
+  [["id: \"dsh-cockpit-ui\"", "id: \"dsh-cockpit/ui\""]],
 );
 
 await writeFile(path.join(embedded, "layout/package.json"), JSON.stringify({
-  name: "ethan-workbench/layout",
+  name: "dsh-cockpit/layout",
   type: "module",
   exports: { ".": "./index.js", "./client": "./client.js", "./package.json": "./package.json" },
   dsh: {
@@ -49,7 +49,7 @@ await writeFile(path.join(embedded, "layout/package.json"), JSON.stringify({
 }, null, 2) + "\n");
 
 await writeFile(path.join(embedded, "ui/package.json"), JSON.stringify({
-  name: "ethan-workbench/ui",
+  name: "dsh-cockpit/ui",
   type: "module",
   exports: { ".": "./index.js", "./client": "./client.js", "./package.json": "./package.json" },
 }, null, 2) + "\n");

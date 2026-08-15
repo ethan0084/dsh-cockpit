@@ -1,9 +1,9 @@
-# Ethan Workbench 0.1.1
+# DSH Cockpit 0.2.0
 
-The single installable Cordis bundle for Ethan Workbench. It embeds the layout and UI entry points, so no component packages need to be installed separately. Full documentation, source code, license, and contribution guide are available in the source repository.
+The single installable Cordis bundle for DSH Cockpit. It embeds the layout and UI entry points, so no component packages need to be installed separately. Full documentation, source code, license, and contribution guide are available in the source repository.
 
 ```bash
-dsh plugin --profile web add ethan-workbench
+dsh plugin --profile web add dsh-cockpit
 ```
 
 Compatible with DeepSeek Harness `0.1.0-rc.6`.

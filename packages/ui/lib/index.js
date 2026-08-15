@@ -1,4 +1,4 @@
-/* Ethan Workbench UI. Copyright (C) 2026 Ethan. MIT License. */
+/* DSH Cockpit UI. Copyright (C) 2026 DSH Cockpit contributors. MIT License. */
 import { promises as fs, createReadStream, createWriteStream, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -12,15 +12,18 @@ const API_PATH = "/dsh-workspace/api";
 const ASSET_PATH = "/dsh-workspace/asset";
 const MAX_TEXT_BYTES = 12 * 1024 * 1024;
 const MAX_BODY_BYTES = 14 * 1024 * 1024;
+const MAX_TERMINAL_COMMAND_BYTES = 16 * 1024;
+const MAX_TERMINAL_OUTPUT_BYTES = 1024 * 1024;
+const TERMINAL_TIMEOUT_MS = 120 * 1000;
 const CLIENT_PATH = fileURLToPath(new URL("./client.js", import.meta.url));
 const CLIENT_REV = createHash("sha1").update(readFileSync(CLIENT_PATH)).digest("hex").slice(0, 12);
 const CLIENT_ENTRY = {
-  id: "ethan-workbench-ui",
+  id: "dsh-cockpit-ui",
   url: `/dsh-workspace/client.js?rev=${CLIENT_REV}`,
   rev: CLIENT_REV,
   inject: [
     "@deepseek-ai/dsh-client-runtime",
-    "ethan-workbench-layout",
+    "dsh-cockpit-layout",
     "@deepseek-ai/dsh-client-ui-conversation"
   ]
 };
@@ -201,6 +204,97 @@ async function uploadFile(req, rootValue, destinationValue, nameValue, lastModif
   return { path: path.relative(destinationResult.root, finalTarget), size: stat.size, mtimeMs: stat.mtimeMs };
 }
 
+function assertSameOrigin(req) {
+  const site = req.headers["sec-fetch-site"];
+  if (typeof site === "string" && site !== "same-origin" && site !== "none") throw new Error("cross-origin-request");
+  const origin = req.headers.origin;
+  const host = req.headers.host;
+  if (typeof origin === "string" && typeof host === "string" && new URL(origin).host !== host) throw new Error("cross-origin-request");
+}
+
+export async function runTerminalCommand(rootValue, commandValue, cwdValue = "") {
+  const { root } = targetFrom(rootValue, "");
+  if (typeof cwdValue !== "string" || cwdValue.includes("\0")) throw new Error("invalid-terminal-cwd");
+  const target = cwdValue ? path.resolve(root, cwdValue) : root;
+  const stat = await fs.stat(target);
+  if (!stat.isDirectory()) throw new Error("invalid-terminal-cwd");
+  if (typeof commandValue !== "string" || commandValue.trim().length === 0) throw new Error("invalid-command");
+  if (Buffer.byteLength(commandValue) > MAX_TERMINAL_COMMAND_BYTES) throw new Error("command-too-long");
+
+  const windows = process.platform === "win32";
+  const shell = windows ? process.env.ComSpec || "cmd.exe" : process.env.SHELL && path.isAbsolute(process.env.SHELL) ? process.env.SHELL : "/bin/sh";
+  const cwdMarker = `__DSH_COCKPIT_CWD_${randomUUID()}__`;
+  const script = windows
+    ? `${commandValue}\r\nset "__dwu_exit=%errorlevel%"\r\necho ${cwdMarker}%CD%\r\nexit /b %__dwu_exit%`
+    : `${commandValue}\n__dwu_exit=$?\nprintf '\\n${cwdMarker}%s\\n' "$PWD"\nexit "$__dwu_exit"`;
+  const args = windows ? ["/d", "/s", "/c", script] : ["-lc", script];
+
+  return await new Promise((resolve, reject) => {
+    const child = spawn(shell, args, {
+      cwd: target,
+      env: { ...process.env, PWD: target },
+      stdio: ["ignore", "pipe", "pipe"]
+    });
+    const stdoutChunks = [];
+    const stderrChunks = [];
+    let outputBytes = 0;
+    let truncated = false;
+    let timedOut = false;
+    let settled = false;
+    let timeout;
+
+    const append = (chunks, chunk) => {
+      if (truncated) return;
+      const buffer = Buffer.from(chunk);
+      const remaining = MAX_TERMINAL_OUTPUT_BYTES - outputBytes;
+      if (remaining <= 0) {
+        truncated = true;
+        child.kill("SIGTERM");
+        return;
+      }
+      const accepted = buffer.subarray(0, remaining);
+      chunks.push(accepted);
+      outputBytes += accepted.length;
+      if (accepted.length < buffer.length) {
+        truncated = true;
+        child.kill("SIGTERM");
+      }
+    };
+
+    child.stdout.on("data", (chunk) => append(stdoutChunks, chunk));
+    child.stderr.on("data", (chunk) => append(stderrChunks, chunk));
+    child.once("error", (error) => {
+      settled = true;
+      clearTimeout(timeout);
+      reject(error);
+    });
+    child.once("close", (code, signal) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timeout);
+      let stdout = Buffer.concat(stdoutChunks).toString("utf8");
+      const stderr = Buffer.concat(stderrChunks).toString("utf8");
+      let cwd = target;
+      const markerIndex = stdout.lastIndexOf(cwdMarker);
+      if (markerIndex >= 0) {
+        const reported = stdout.slice(markerIndex + cwdMarker.length).split(/\r?\n/, 1)[0].trim();
+        if (path.isAbsolute(reported)) cwd = path.resolve(reported);
+        stdout = stdout.slice(0, markerIndex).replace(/\r?\n$/, "");
+      }
+      let output = stdout + (stdout && stderr && !/\r?\n$/.test(stdout) ? "\n" : "") + stderr;
+      if (truncated) output += "\n[输出超过 1 MB，命令已停止]";
+      if (timedOut) output += "\n[运行超过 120 秒，命令已停止]";
+      resolve({ output, cwd, code: typeof code === "number" ? code : 1, signal: signal ?? undefined, truncated, timedOut });
+    });
+    timeout = setTimeout(() => {
+      timedOut = true;
+      child.kill("SIGTERM");
+      setTimeout(() => { if (!settled) child.kill("SIGKILL"); }, 1500).unref();
+    }, TERMINAL_TIMEOUT_MS);
+    timeout.unref();
+  });
+}
+
 function previewDocument(root, relative) {
   const { target } = targetFrom(root, relative);
   const ext = path.extname(target).toLowerCase();
@@ -259,9 +353,15 @@ async function handleApi(req, res) {
       json(res, 200, { ok: true, ...(await uploadFile(req, url.searchParams.get("root"), url.searchParams.get("destination") ?? "", url.searchParams.get("name"), url.searchParams.get("lastModified"))) });
       return;
     }
+    if (req.method === "POST" && op === "terminal") {
+      assertSameOrigin(req);
+      const body = await readJson(req);
+      json(res, 200, { ok: true, ...(await runTerminalCommand(body.root, body.command, body.cwd)) });
+      return;
+    }
     json(res, 404, { ok: false, error: "unknown-operation" });
   } catch (error) {
-    const code = error?.code === "FILE_CHANGED" || error?.code === "DESTINATION_EXISTS" ? 409 : error?.message === "text-file-too-large" || error?.message === "request-too-large" ? 413 : 400;
+    const code = error?.message === "cross-origin-request" ? 403 : error?.code === "FILE_CHANGED" || error?.code === "DESTINATION_EXISTS" ? 409 : error?.message === "text-file-too-large" || error?.message === "request-too-large" || error?.message === "command-too-long" ? 413 : 400;
     json(res, code, { ok: false, error: error instanceof Error ? error.message : String(error) });
   }
 }
@@ -349,5 +449,5 @@ export function apply(ctx) {
       disposeAsset();
       disposeApi();
     };
-  }, "ethan-workbench-ui routes");
+  }, "dsh-cockpit-ui routes");
 }
