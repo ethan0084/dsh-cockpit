@@ -4,6 +4,8 @@
 
 > 当前版本面向 **DeepSeek Harness 0.1.0-rc.6**。DSH 仍处于开发预览阶段，升级 DSH 前请先查看兼容性说明。
 
+<img width="1283" height="862" alt="image" src="https://github.com/user-attachments/assets/e9dcd44f-16f3-4f23-9c51-fcdbf9fe1da3" />
+
 ## 功能
 
 - 多项目侧栏与可折叠文件树
