@@ -1,6 +1,6 @@
 # Contributing
 
-感谢你改进 Ethan Workbench。
+感谢你改进 DSH Cockpit。
 
 1. 从 `main` 创建主题分支。
 2. 保持改动聚焦，不要提交项目文件、会话、凭据或构建产物。

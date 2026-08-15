@@ -1,10 +1,10 @@
 /*
- * Ethan Workbench layout — modified from DeepSeek Harness ui-layout (MIT).
- * Modifications Copyright (C) 2026 Ethan. MIT License.
+ * DSH Cockpit layout — modified from DeepSeek Harness ui-layout (MIT).
+ * Modifications Copyright (C) 2026 DSH Cockpit contributors. MIT License.
  * See ../../../THIRD_PARTY_NOTICES.md in the source distribution.
  */
 window.__ModuleLoader__.load({
-	id: "ethan-workbench-layout",
+	id: "dsh-cockpit-layout",
 	factory: (require) => {
 		var module = { exports: {} };
 		var exports = module.exports;
@@ -68,10 +68,10 @@ window.__ModuleLoader__.load({
 		//#endregion
 		//#region \0dsh-css:/home/runner/work/deepseek-harness/deepseek-harness/packages/client/ui-layout/src/client/AppFrame.module.css.mjs
 		const css = ".pI_x6G_frame{background:var(--dsw-alias-bg-base);height:100%;transition:grid-template-columns var(--ds-transition-duration-slow) var(--ds-ease-in-out);grid-template-rows:100%;display:grid;position:relative;overflow:hidden}.pI_x6G_frame[data-dragging]{transition:none}@media (prefers-reduced-motion:reduce){.pI_x6G_frame{transition:none}}.pI_x6G_sidebarCol{background:var(--dsw-specific-sidebar-fill);border-right:1px solid var(--dsw-alias-border-l1);min-width:0;overflow:hidden}.pI_x6G_centerCol{flex-direction:column;min-width:0;display:flex;overflow:hidden}.pI_x6G_detailsCol{border-left:1px solid var(--dsw-alias-border-l2);min-width:0;overflow:hidden}.pI_x6G_frame[data-details-collapsed] .pI_x6G_detailsCol{border-left:none}.pI_x6G_handle{cursor:col-resize;z-index:2;touch-action:none;width:8px;transition:left var(--ds-transition-duration-slow) var(--ds-ease-in-out);margin-left:-4px;position:absolute;top:0;bottom:0}.pI_x6G_frame[data-dragging] .pI_x6G_handle{transition:none}@media (prefers-reduced-motion:reduce){.pI_x6G_handle{transition:none}}.pI_x6G_handle[data-side=details]:after{content:\"\";box-sizing:border-box;background:var(--dsw-alias-button-floating-fill);border:1px solid var(--dsw-alias-border-l2-darkmode-thin);opacity:0;width:12px;height:32px;transition:opacity var(--ds-transition-duration-slow) var(--ds-ease-in-out), background var(--ds-transition-duration-slow) var(--ds-ease-in-out);border-radius:10px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}.pI_x6G_detailsCol:hover~.pI_x6G_handle[data-side=details]:after,.pI_x6G_handle[data-side=details]:hover:after,.pI_x6G_handle[data-side=details][data-dragging=true]:after{opacity:1}.pI_x6G_handle[data-side=details]:hover:after,.pI_x6G_handle[data-side=details][data-dragging=true]:after{background:var(--dsw-alias-button-floating-hover);border-color:var(--dsw-alias-border-l3)}.pI_x6G_overlayLayer{z-index:20;pointer-events:none;position:absolute;inset:0}.pI_x6G_overlayLayer>*{pointer-events:auto}";
-		const tagId = "ethan-workbench-layout/AppFrame.module.css";
+		const tagId = "dsh-cockpit-layout/AppFrame.module.css";
 		if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId) + "]") === null) {
 			const tag = document.createElement("style");
-			tag.dataset.plugin = "ethan-workbench-layout";
+			tag.dataset.plugin = "dsh-cockpit-layout";
 			tag.dataset.pluginCss = tagId;
 			tag.textContent = css;
 			document.head.appendChild(tag);
@@ -81,10 +81,10 @@ window.__ModuleLoader__.load({
 		// tool details surface overlays the workspace instead of opening a fourth
 		// column.
 		const workspaceShellCss = ".pI_x6G_workspaceCol{background:var(--dsw-alias-bg-base);position:relative;min-width:0;display:flex;flex-direction:column;overflow:hidden}.pI_x6G_rightCol{background:var(--dsw-alias-bg-base);border-left:1px solid var(--dsw-alias-border-l2);min-width:0;display:flex;flex-direction:column;overflow:hidden;position:relative}.pI_x6G_frame[data-right-collapsed] .pI_x6G_rightCol{border-left:0}.pI_x6G_historySlot{position:absolute;z-index:16;top:10px;right:12px;pointer-events:none}.pI_x6G_historySlot>*{pointer-events:auto}.pI_x6G_detailsOverlay{position:absolute;inset:0;z-index:10;background:var(--dsw-alias-bg-base);display:flex;flex-direction:column;overflow:hidden}.pI_x6G_detailsOverlay[data-closed]{visibility:hidden;pointer-events:none}.pI_x6G_handle[data-side=sidebar],.pI_x6G_handle[data-side=right]{width:14px;margin-left:-7px}.pI_x6G_handle[data-side=sidebar]:after,.pI_x6G_handle[data-side=right]:after{content:\"\";box-sizing:border-box;background:var(--dsw-alias-button-floating-fill);border:1px solid var(--dsw-alias-border-l2-darkmode-thin);opacity:.48;width:8px;height:52px;transition:opacity 160ms ease-out,background 160ms ease-out,border-color 160ms ease-out;border-radius:10px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}.pI_x6G_handle[data-side=sidebar]:hover:after,.pI_x6G_handle[data-side=sidebar][data-dragging=true]:after,.pI_x6G_handle[data-side=right]:hover:after,.pI_x6G_handle[data-side=right][data-dragging=true]:after{opacity:1;background:var(--dsw-alias-button-floating-hover);border-color:var(--dsw-alias-border-l3)}.pI_x6G_rightToggle{position:absolute;z-index:12;top:14px;width:28px;height:28px;border:0;border-radius:50%;background:transparent;color:var(--dsw-alias-label-secondary);display:grid;place-items:center;padding:0;cursor:pointer;box-shadow:none;transition:right var(--ds-transition-duration-slow) var(--ds-ease-in-out),background-color 140ms ease,color 140ms ease,transform 140ms cubic-bezier(.23,1,.32,1)}.pI_x6G_rightToggle:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}.pI_x6G_rightToggle:active{transform:scale(.96)}.pI_x6G_rightPanelIcon{display:block;transform:scaleX(-1)}";
-		const workspaceShellTagId = "ethan-workbench-layout/workspace-shell.css";
+		const workspaceShellTagId = "dsh-cockpit-layout/workspace-shell.css";
 		if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(workspaceShellTagId) + "]") === null) {
 			const tag = document.createElement("style");
-			tag.dataset.plugin = "ethan-workbench-layout";
+			tag.dataset.plugin = "dsh-cockpit-layout";
 			tag.dataset.pluginCss = workspaceShellTagId;
 			tag.textContent = workspaceShellCss;
 			document.head.appendChild(tag);

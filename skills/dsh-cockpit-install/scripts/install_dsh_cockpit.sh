@@ -4,13 +4,13 @@ set -euo pipefail
 
 DSH_VERSION="0.1.0-rc.6"
 WEB_APP_VERSION="0.1.0-rc.6"
-WORKBENCH_VERSION="0.1.1"
+COCKPIT_VERSION="0.2.0"
 MODE="check"
 TARGET_HOME="$HOME"
 EXTRA_ARGS=()
 
 usage() {
-  printf '%s\n' "Usage: install_dsh.sh --check|--install|--verify|--launch [--target-home PATH] [-- ARGS...]"
+  printf '%s\n' "Usage: install_dsh_cockpit.sh --check|--install|--verify|--launch [--target-home PATH] [-- ARGS...]"
 }
 
 while (( $# > 0 )); do
@@ -96,7 +96,7 @@ print_check() {
   else
     printf '%s\n' "DSH: $DSH_VERSION will be installed into $INSTALL_PREFIX"
   fi
-  printf '%s\n' "Workbench: ethan-workbench@$WORKBENCH_VERSION"
+  printf '%s\n' "DSH Cockpit: dsh-cockpit@$COCKPIT_VERSION"
 }
 
 ensure_dsh() {
@@ -132,7 +132,7 @@ install_public_stack() {
   dsh_bin="$(ensure_dsh)"
   configure_builds "$dsh_bin"
   CI=1 PNPM_DISABLE_SELF_UPDATE_CHECK=1 DSH_HOME="$TARGET_DSH" "$dsh_bin" plugin --profile web add "@deepseek-ai/dsh-web-app@$WEB_APP_VERSION"
-  CI=1 PNPM_DISABLE_SELF_UPDATE_CHECK=1 DSH_HOME="$TARGET_DSH" "$dsh_bin" plugin --profile web add "ethan-workbench@$WORKBENCH_VERSION"
+  CI=1 PNPM_DISABLE_SELF_UPDATE_CHECK=1 DSH_HOME="$TARGET_DSH" "$dsh_bin" plugin --profile web add "dsh-cockpit@$COCKPIT_VERSION"
   verify_install
 }
 
@@ -142,23 +142,23 @@ verify_install() {
   dsh_bin="$(find_dsh 2>/dev/null)" || { printf '%s\n' "DSH $DSH_VERSION is not installed." >&2; return 1; }
   manifest="$TARGET_DSH/profiles/web/package.json"
   [[ -f "$manifest" ]] || { printf '%s\n' "Missing web profile: $manifest" >&2; return 1; }
-  node - "$manifest" "$WEB_APP_VERSION" "$WORKBENCH_VERSION" <<'NODE'
+  node - "$manifest" "$WEB_APP_VERSION" "$COCKPIT_VERSION" <<'NODE'
 const fs = require("node:fs");
-const [manifestPath, webVersion, workbenchVersion] = process.argv.slice(2);
+const [manifestPath, webVersion, cockpitVersion] = process.argv.slice(2);
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
 const dependencies = manifest.dependencies || {};
 if (dependencies["@deepseek-ai/dsh-web-app"] !== webVersion) {
   throw new Error(`Expected @deepseek-ai/dsh-web-app@${webVersion}`);
 }
-if (dependencies["ethan-workbench"] !== workbenchVersion) {
-  throw new Error(`Expected ethan-workbench@${workbenchVersion}`);
+if (dependencies["dsh-cockpit"] !== cockpitVersion) {
+  throw new Error(`Expected dsh-cockpit@${cockpitVersion}`);
 }
 NODE
-  config_file="$(mktemp "${TMPDIR:-/tmp}/dsh-install-config.XXXXXX")"
+  config_file="$(mktemp "${TMPDIR:-/tmp}/dsh-cockpit-install-config.XXXXXX")"
   trap 'rm -f "$config_file"' RETURN
   DSH_HOME="$TARGET_DSH" "$dsh_bin" --profile web --dump-config >"$config_file"
-  grep -Fq "name: ethan-workbench/layout" "$config_file" || { printf '%s\n' "Missing ethan-workbench/layout in composed config." >&2; return 1; }
-  grep -Fq "name: ethan-workbench/ui" "$config_file" || { printf '%s\n' "Missing ethan-workbench/ui in composed config." >&2; return 1; }
+  grep -Fq "name: dsh-cockpit/layout" "$config_file" || { printf '%s\n' "Missing dsh-cockpit/layout in composed config." >&2; return 1; }
+  grep -Fq "name: dsh-cockpit/ui" "$config_file" || { printf '%s\n' "Missing dsh-cockpit/ui in composed config." >&2; return 1; }
   rm -f "$config_file"
   trap - RETURN
   printf '%s\n' "DSH installation verification: OK"

@@ -1,6 +1,6 @@
-/* Ethan Workbench UI. Copyright (C) 2026 Ethan. MIT License. */
+/* DSH Cockpit UI. Copyright (C) 2026 DSH Cockpit contributors. MIT License. */
 window.__ModuleLoader__.load({
-  id: "ethan-workbench-ui",
+  id: "dsh-cockpit-ui",
   factory: (require) => {
     const module = { exports: {} };
     const exports = module.exports;
@@ -28,7 +28,8 @@ window.__ModuleLoader__.load({
     const css = `
       .dwu-root,.dwu-root *{box-sizing:border-box}.dwu-root{height:100%;min-height:0;color:var(--dsw-alias-label-primary);font-family:Inter,var(--dsw-font-family),-apple-system,BlinkMacSystemFont,sans-serif}
       .dwu-sidebar{display:grid;grid-template-columns:48px minmax(0,1fr);height:100%;min-height:0;background:var(--dsw-specific-sidebar-fill);overflow:hidden}.dwu-sidebar[data-collapsed=true]{grid-template-columns:36px 0}.dwu-projects{border-right:1px solid var(--dsw-alias-border-l1);padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:7px;overflow-y:auto}.dwu-projectButton,.dwu-addProject{width:36px;height:36px;flex:none;border:0;border-radius:10px;display:grid;place-items:center;cursor:pointer;color:var(--dsw-alias-label-secondary);background:transparent;font-size:12px;font-weight:650}.dwu-projectButton:hover,.dwu-addProject:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}.dwu-projectButton[data-active=true]{background:var(--dsw-alias-state-business-tertiary);color:var(--dsw-alias-state-business-primary);box-shadow:inset 2px 0 0 var(--dsw-alias-state-business-primary)}.dwu-addProject{margin-top:auto;font-size:20px;font-weight:400}.dwu-treePanel{min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden}.dwu-treeHead{height:42px;flex:none;display:flex;align-items:center;gap:7px;padding:0 8px 0 12px;border-bottom:1px solid var(--dsw-alias-border-l1)}.dwu-treeTitle{min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;font-weight:650;text-transform:uppercase;letter-spacing:.04em}.dwu-iconButton{width:28px;height:28px;border:0;border-radius:7px;background:transparent;color:var(--dsw-alias-label-tertiary);cursor:pointer;display:grid;place-items:center}.dwu-iconButton:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}.dwu-tree{flex:1;min-height:0;overflow:auto;padding:6px 4px 16px}.dwu-emptySide{padding:18px 12px;color:var(--dsw-alias-label-tertiary);font-size:12px;line-height:1.55}.dwu-treeRow{height:28px;display:flex;align-items:center;gap:5px;border-radius:6px;padding-right:5px;cursor:pointer;font-size:12px;white-space:nowrap;user-select:none}.dwu-treeRow:hover{background:var(--dsw-alias-interactive-bg-hover)}.dwu-treeRow[data-active=true]{background:var(--dsw-alias-state-business-tertiary);color:var(--dsw-alias-label-primary-bluish)}.dwu-chevron{width:14px;flex:none;text-align:center;color:var(--dsw-alias-label-caption);font-size:10px}.dwu-fileGlyph{width:15px;flex:none;text-align:center;color:var(--dsw-alias-label-secondary)}.dwu-treeName{min-width:0;overflow:hidden;text-overflow:ellipsis}.dwu-treeLoading{padding:8px 10px;color:var(--dsw-alias-label-caption);font-size:11px}
-      .dwu-workspace{height:100%;min-height:0;display:flex;flex-direction:column;background:var(--dsw-alias-bg-base)}.dwu-workHead{height:42px;flex:none;display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid var(--dsw-alias-border-l1)}.dwu-workTitle{font-size:12px;font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dwu-workPath{font-size:11px;color:var(--dsw-alias-label-caption);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dwu-tabs{height:38px;flex:none;display:flex;align-items:stretch;overflow-x:auto;border-bottom:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-base)}.dwu-tab{min-width:110px;max-width:210px;border:0;border-right:1px solid var(--dsw-alias-border-l1);background:transparent;color:var(--dsw-alias-label-secondary);display:flex;align-items:center;gap:7px;padding:0 7px 0 11px;cursor:pointer;font-size:12px}.dwu-tab[data-active=true]{background:var(--dsw-specific-sidebar-fill);color:var(--dsw-alias-label-primary);box-shadow:inset 0 -2px 0 var(--dsw-alias-state-business-primary)}.dwu-tabName{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dwu-dirty{color:var(--dsw-alias-state-business-primary);font-size:14px}.dwu-close{width:20px;height:20px;border:0;background:transparent;border-radius:5px;color:inherit;cursor:pointer;padding:0}.dwu-close:hover{background:var(--dsw-alias-interactive-bg-hover)}.dwu-body{flex:1;min-height:0;position:relative;overflow:hidden}.dwu-welcome{height:100%;display:grid;place-items:center;padding:32px;color:var(--dsw-alias-label-tertiary);text-align:center}.dwu-welcomeCard{max-width:430px}.dwu-welcomeIcon{font-size:38px;margin-bottom:12px}.dwu-welcomeTitle{color:var(--dsw-alias-label-primary);font-size:18px;font-weight:650;margin-bottom:7px}.dwu-welcomeText{font-size:13px;line-height:1.6}.dwu-filePane{height:100%;min-height:0;display:flex;flex-direction:column}.dwu-fileToolbar{height:36px;flex:none;border-bottom:1px solid var(--dsw-alias-border-l1);display:flex;align-items:center;gap:6px;padding:0 10px}.dwu-fileMeta{min-width:0;flex:1;color:var(--dsw-alias-label-caption);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dwu-toolButton{height:26px;border:1px solid var(--dsw-alias-border-l2);border-radius:7px;background:transparent;color:var(--dsw-alias-label-secondary);padding:0 9px;font-size:11px;cursor:pointer}.dwu-toolButton:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}.dwu-toolButton:disabled{opacity:.45;cursor:default}.dwu-status{font-size:11px;color:var(--dsw-alias-label-caption)}.dwu-status[data-error=true]{color:var(--dsw-alias-state-error-primary)}.dwu-editorWrap{flex:1;min-height:0;display:flex;overflow:hidden;background:var(--dsw-alias-bg-base)}.dwu-lines{width:48px;flex:none;margin:0;padding:14px 10px 40px 0;text-align:right;overflow:hidden;white-space:pre;color:var(--dsw-alias-label-caption);background:var(--dsw-specific-sidebar-fill);border-right:1px solid var(--dsw-alias-border-l1);font:12px/20px ui-monospace,SFMono-Regular,Menlo,monospace;user-select:none}.dwu-codeArea{flex:1;min-width:0;min-height:0;position:relative;overflow:hidden}.dwu-highlight,.dwu-editor{position:absolute;inset:0;margin:0;border:0;padding:14px 18px 40px;font:13px/20px ui-monospace,SFMono-Regular,Menlo,monospace;tab-size:2;white-space:pre;overflow:auto}.dwu-highlight{pointer-events:none;color:var(--dsw-alias-label-primary);background:transparent;overflow:hidden}.dwu-highlight .kw{color:#c792ea}.dwu-highlight .str{color:#c3e88d}.dwu-highlight .num{color:#f78c6c}.dwu-highlight .com{color:var(--dsw-alias-label-caption);font-style:italic}.dwu-editor{width:100%;height:100%;resize:none;outline:0;background:transparent;color:var(--dsw-alias-label-primary);caret-color:var(--dsw-alias-state-business-primary)}.dwu-editor[data-highlight=true]{color:transparent;-webkit-text-fill-color:transparent}.dwu-editor[data-highlight=true]::selection{background:color-mix(in srgb,var(--dsw-alias-state-business-primary) 35%,transparent)}.dwu-editor[data-flash=true]{animation:dwu-flash .9s ease-out}@keyframes dwu-flash{0%{background:color-mix(in srgb,var(--dsw-alias-state-business-primary) 13%,transparent)}100%{background:transparent}}.dwu-preview{height:100%;overflow:auto;padding:28px clamp(24px,7vw,84px);font-size:14px;line-height:1.72}.dwu-preview h1,.dwu-preview h2,.dwu-preview h3{line-height:1.25;margin:1.3em 0 .55em}.dwu-preview h1{font-size:28px}.dwu-preview h2{font-size:22px;border-bottom:1px solid var(--dsw-alias-border-l1);padding-bottom:7px}.dwu-preview pre{background:var(--dsw-specific-sidebar-fill);border:1px solid var(--dsw-alias-border-l1);border-radius:10px;padding:14px;overflow:auto}.dwu-preview code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--dsw-specific-sidebar-fill);border-radius:4px;padding:1px 4px}.dwu-preview blockquote{border-left:3px solid var(--dsw-alias-state-business-primary);margin-left:0;padding-left:14px;color:var(--dsw-alias-label-secondary)}.dwu-preview a{color:var(--dsw-alias-state-business-primary)}.dwu-frame{width:100%;height:100%;border:0;background:white}.dwu-media{height:100%;display:grid;place-items:center;padding:24px;background:#0e1015}.dwu-media video,.dwu-media audio{max-width:100%;max-height:100%}.dwu-media img{max-width:100%;max-height:100%;object-fit:contain}.dwu-office{height:100%;display:flex;flex-direction:column}.dwu-sheetTabs{height:36px;display:flex;align-items:center;gap:5px;padding:0 8px;border-bottom:1px solid var(--dsw-alias-border-l1);overflow-x:auto}.dwu-sheetTab{height:25px;padding:0 9px;border:0;border-radius:6px;background:transparent;color:var(--dsw-alias-label-secondary);font-size:11px;cursor:pointer}.dwu-sheetTab[data-active=true]{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}.dwu-loading,.dwu-error{height:100%;display:grid;place-items:center;padding:28px;color:var(--dsw-alias-label-tertiary);font-size:13px}.dwu-error{color:var(--dsw-alias-state-error-primary)}
+      .dwu-workspace{height:100%;min-height:0;display:flex;flex-direction:column;background:var(--dsw-alias-bg-base)}.dwu-workHead{height:42px;flex:none;display:flex;align-items:center;gap:8px;padding:0 52px 0 12px;border-bottom:1px solid var(--dsw-alias-border-l1)}.dwu-workTitle{font-size:12px;font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dwu-workPath{font-size:11px;color:var(--dsw-alias-label-caption);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dwu-tabs{height:38px;flex:none;display:flex;align-items:stretch;overflow-x:auto;border-bottom:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-base)}.dwu-tab{min-width:110px;max-width:210px;border:0;border-right:1px solid var(--dsw-alias-border-l1);background:transparent;color:var(--dsw-alias-label-secondary);display:flex;align-items:center;gap:7px;padding:0 7px 0 11px;cursor:pointer;font-size:12px}.dwu-tab[data-active=true]{background:var(--dsw-specific-sidebar-fill);color:var(--dsw-alias-label-primary);box-shadow:inset 0 -2px 0 var(--dsw-alias-state-business-primary)}.dwu-tabName{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dwu-dirty{color:var(--dsw-alias-state-business-primary);font-size:14px}.dwu-close{width:20px;height:20px;border:0;background:transparent;border-radius:5px;color:inherit;cursor:pointer;padding:0}.dwu-close:hover{background:var(--dsw-alias-interactive-bg-hover)}.dwu-body{flex:1;min-height:0;position:relative;overflow:hidden}.dwu-welcome{height:100%;display:grid;place-items:center;padding:32px;color:var(--dsw-alias-label-tertiary);text-align:center}.dwu-welcomeCard{max-width:430px}.dwu-welcomeIcon{font-size:38px;margin-bottom:12px}.dwu-welcomeTitle{color:var(--dsw-alias-label-primary);font-size:18px;font-weight:650;margin-bottom:7px}.dwu-welcomeText{font-size:13px;line-height:1.6}.dwu-filePane{height:100%;min-height:0;display:flex;flex-direction:column}.dwu-fileToolbar{height:36px;flex:none;border-bottom:1px solid var(--dsw-alias-border-l1);display:flex;align-items:center;gap:6px;padding:0 10px}.dwu-fileMeta{min-width:0;flex:1;color:var(--dsw-alias-label-caption);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dwu-toolButton{height:26px;border:1px solid var(--dsw-alias-border-l2);border-radius:7px;background:transparent;color:var(--dsw-alias-label-secondary);padding:0 9px;font-size:11px;cursor:pointer}.dwu-toolButton:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}.dwu-toolButton:disabled{opacity:.45;cursor:default}.dwu-status{font-size:11px;color:var(--dsw-alias-label-caption)}.dwu-status[data-error=true]{color:var(--dsw-alias-state-error-primary)}.dwu-editorWrap{flex:1;min-height:0;display:flex;overflow:hidden;background:var(--dsw-alias-bg-base)}.dwu-lines{width:48px;flex:none;margin:0;padding:14px 10px 40px 0;text-align:right;overflow:hidden;white-space:pre;color:var(--dsw-alias-label-caption);background:var(--dsw-specific-sidebar-fill);border-right:1px solid var(--dsw-alias-border-l1);font:12px/20px ui-monospace,SFMono-Regular,Menlo,monospace;user-select:none}.dwu-codeArea{flex:1;min-width:0;min-height:0;position:relative;overflow:hidden}.dwu-highlight,.dwu-editor{position:absolute;inset:0;margin:0;border:0;padding:14px 18px 40px;font:13px/20px ui-monospace,SFMono-Regular,Menlo,monospace;tab-size:2;white-space:pre;overflow:auto}.dwu-highlight{pointer-events:none;color:var(--dsw-alias-label-primary);background:transparent;overflow:hidden}.dwu-highlight .kw{color:#c792ea}.dwu-highlight .str{color:#c3e88d}.dwu-highlight .num{color:#f78c6c}.dwu-highlight .com{color:var(--dsw-alias-label-caption);font-style:italic}.dwu-editor{width:100%;height:100%;resize:none;outline:0;background:transparent;color:var(--dsw-alias-label-primary);caret-color:var(--dsw-alias-state-business-primary)}.dwu-editor[data-highlight=true]{color:transparent;-webkit-text-fill-color:transparent}.dwu-editor[data-highlight=true]::selection{background:color-mix(in srgb,var(--dsw-alias-state-business-primary) 35%,transparent)}.dwu-editor[data-flash=true]{animation:dwu-flash .9s ease-out}@keyframes dwu-flash{0%{background:color-mix(in srgb,var(--dsw-alias-state-business-primary) 13%,transparent)}100%{background:transparent}}.dwu-preview{height:100%;overflow:auto;padding:28px clamp(24px,7vw,84px);font-size:14px;line-height:1.72}.dwu-preview h1,.dwu-preview h2,.dwu-preview h3{line-height:1.25;margin:1.3em 0 .55em}.dwu-preview h1{font-size:28px}.dwu-preview h2{font-size:22px;border-bottom:1px solid var(--dsw-alias-border-l1);padding-bottom:7px}.dwu-preview pre{background:var(--dsw-specific-sidebar-fill);border:1px solid var(--dsw-alias-border-l1);border-radius:10px;padding:14px;overflow:auto}.dwu-preview code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--dsw-specific-sidebar-fill);border-radius:4px;padding:1px 4px}.dwu-preview blockquote{border-left:3px solid var(--dsw-alias-state-business-primary);margin-left:0;padding-left:14px;color:var(--dsw-alias-label-secondary)}.dwu-preview a{color:var(--dsw-alias-state-business-primary)}.dwu-frame{width:100%;height:100%;border:0;background:white}.dwu-media{height:100%;display:grid;place-items:center;padding:24px;background:#0e1015}.dwu-media video,.dwu-media audio{max-width:100%;max-height:100%}.dwu-media img{max-width:100%;max-height:100%;object-fit:contain}.dwu-office{height:100%;display:flex;flex-direction:column}.dwu-sheetTabs{height:36px;display:flex;align-items:center;gap:5px;padding:0 8px;border-bottom:1px solid var(--dsw-alias-border-l1);overflow-x:auto}.dwu-sheetTab{height:25px;padding:0 9px;border:0;border-radius:6px;background:transparent;color:var(--dsw-alias-label-secondary);font-size:11px;cursor:pointer}.dwu-sheetTab[data-active=true]{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}.dwu-loading,.dwu-error{height:100%;display:grid;place-items:center;padding:28px;color:var(--dsw-alias-label-tertiary);font-size:13px}.dwu-error{color:var(--dsw-alias-state-error-primary)}
+      .dwu-tab[data-preview=true] .dwu-tabName{font-style:italic}.dwu-workPath{flex:1}.dwu-main{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}.dwu-terminalToggle{width:30px;height:28px;flex:none;display:grid;place-items:center;border:1px solid var(--dsw-alias-border-l2);border-radius:7px;padding:0;background:transparent;color:var(--dsw-alias-label-secondary);cursor:pointer}.dwu-terminalToggle:hover,.dwu-terminalToggle[data-active=true]{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary);border-color:var(--dsw-alias-border-l3)}.dwu-terminalGlyph{font:700 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace}.dwu-terminal{height:230px;min-height:150px;max-height:48%;flex:none;display:flex;flex-direction:column;border-top:1px solid var(--dsw-alias-border-l2);background:#101216;color:#d7dce5}.dwu-terminalHead{height:34px;flex:none;display:flex;align-items:center;gap:7px;padding:0 9px 0 12px;background:#171a20;border-bottom:1px solid #ffffff12}.dwu-terminalCwd{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:#7f8998}.dwu-terminalAction{height:23px;border:0;border-radius:5px;padding:0 7px;background:transparent;color:#8993a3;font-size:10px;cursor:pointer}.dwu-terminalAction:hover{background:#ffffff12;color:#e7ebf2}.dwu-terminalOutput{flex:1;min-height:0;margin:0;padding:10px 13px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font:12px/18px ui-monospace,SFMono-Regular,Menlo,Monaco,monospace;color:#cfd6e2;user-select:text}.dwu-terminalEntry{margin:0 0 8px}.dwu-terminalCommand{color:#f0f3f8}.dwu-terminalPrompt{color:#63d297}.dwu-terminalResult[data-error=true]{color:#ff9b9b}.dwu-terminalForm{height:38px;flex:none;display:flex;align-items:center;gap:8px;padding:0 12px;border-top:1px solid #ffffff12;background:#13161b}.dwu-terminalInput{min-width:0;flex:1;border:0;outline:0;background:transparent;color:#f2f4f8;font:12px/1 ui-monospace,SFMono-Regular,Menlo,Monaco,monospace}.dwu-terminalInput::placeholder{color:#657080}.dwu-terminalInput:disabled{opacity:.58}.dwu-terminalRunning{font:10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:#8fa0b8}
       .dwu-contextDock{width:calc(100% - 32px);max-width:var(--dsh-composer-card-max-width);margin:0 auto -3px;padding:0 6px;display:flex;align-items:center;gap:6px;overflow-x:auto}.dwu-contextLabel{font-size:10px;color:var(--dsw-alias-label-caption);white-space:nowrap}.dwu-chip{height:25px;max-width:170px;flex:none;border:1px solid var(--dsw-alias-border-l2);border-radius:13px;background:var(--dsw-specific-tip);color:var(--dsw-alias-label-secondary);display:flex;align-items:center;gap:5px;padding:0 8px;font-size:10px;cursor:pointer}.dwu-chip[data-enabled=false]{opacity:.48}.dwu-chipName{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dwu-chipDot{width:7px;height:7px;border-radius:50%;background:var(--dsw-alias-state-business-primary)}.dwu-chip[data-enabled=false] .dwu-chipDot{background:var(--dsw-alias-label-caption)}.dwu-sessionSwitch{display:flex;align-items:center;gap:4px}.dwu-sessionSelect{height:28px;max-width:150px;border:1px solid var(--dsw-alias-border-l2);border-radius:8px;background:var(--dsw-alias-bg-base);color:var(--dsw-alias-label-secondary);font-size:11px;padding:0 7px}.dwu-sessionNew{width:28px;height:28px;border:0;border-radius:7px;background:transparent;color:var(--dsw-alias-label-secondary);font-size:18px;cursor:pointer}.dwu-sessionNew:hover{background:var(--dsw-alias-interactive-bg-hover)}
       .dwu-tree{padding:7px 5px 18px}.dwu-treeRow{height:32px;gap:4px;padding:0 6px 0 4px;border-radius:7px;font-size:12.5px}.dwu-indentGuides{align-self:stretch;display:grid;grid-auto-flow:column;grid-auto-columns:18px;flex:none}.dwu-indentGuide{height:100%;position:relative}.dwu-indentGuide:after{content:"";position:absolute;top:0;bottom:0;left:8px;width:1px;background:color-mix(in srgb,var(--dsw-alias-label-caption) 38%,transparent)}.dwu-treeRow:hover .dwu-indentGuide:after,.dwu-treeRow[data-active=true] .dwu-indentGuide:after{background:color-mix(in srgb,var(--dsw-alias-state-business-primary) 52%,transparent)}.dwu-chevron{width:18px;font-size:13px;line-height:18px}.dwu-fileGlyph{width:19px;height:19px;display:grid;place-items:center;flex:none}.dwu-vscodeIcon{width:18px;height:18px;display:block;overflow:visible}.dwu-treeName{line-height:20px}.dwu-treeRow .dwu-iconButton{opacity:0}.dwu-treeRow:hover .dwu-iconButton,.dwu-treeRow:focus-within .dwu-iconButton{opacity:1}.dwu-treeLoading{font-size:12px;line-height:24px}.dwu-projectButton,.dwu-addProject{position:relative}.dwu-projectButton:active,.dwu-addProject:active,.dwu-iconButton:active{transform:scale(.96)}
       .dwu-contextMenu{position:fixed;z-index:1000;width:218px;max-height:calc(100vh - 12px);overflow-y:auto;padding:5px;background:var(--dsw-alias-bg-base);border:1px solid var(--dsw-alias-border-l2);border-radius:10px;box-shadow:0 12px 34px #00000033;color:var(--dsw-alias-label-primary)}.dwu-menuItem{width:100%;min-height:32px;border:0;border-radius:6px;padding:0 9px;display:flex;align-items:center;gap:9px;text-align:left;background:transparent;color:inherit;font-size:12px;cursor:pointer}.dwu-menuItem:hover,.dwu-menuItem:focus-visible{outline:0;background:var(--dsw-alias-interactive-bg-hover)}.dwu-menuItem[data-danger=true]{color:var(--dsw-alias-state-error-primary)}.dwu-menuIcon{width:25px;flex:none;text-align:center;color:var(--dsw-alias-label-tertiary);font-size:10px}.dwu-menuSeparator{height:1px;margin:4px 5px;background:var(--dsw-alias-border-l1)}
@@ -41,10 +42,10 @@ window.__ModuleLoader__.load({
       .dwu-historyButton:disabled{opacity:.45;cursor:default;transform:none}
       @media (prefers-reduced-motion:reduce){.dwu-projectButton:active,.dwu-addProject:active,.dwu-iconButton:active,.dwu-projectPickerAction:active,.dwu-projectPickerRow:active,.dwu-historyButton:active,.dwu-newChatButton:active{transform:none}}
     `;
-    const styleId = "ethan-workbench-ui/styles";
+    const styleId = "dsh-cockpit-ui/styles";
     if (document.querySelector(`style[data-plugin-css=${JSON.stringify(styleId)}]`) === null) {
       const tag = document.createElement("style");
-      tag.dataset.plugin = "ethan-workbench-ui";
+      tag.dataset.plugin = "dsh-cockpit-ui";
       tag.dataset.pluginCss = styleId;
       tag.textContent = css;
       document.head.appendChild(tag);
@@ -183,6 +184,18 @@ window.__ModuleLoader__.load({
     }
 
     function fullPath(root, file = "") { return file ? `${root.replace(/\/$/, "")}/${file}` : root; }
+    function workspaceFileForHostPath(items, value) {
+      if (typeof value !== "string" || !value) return null;
+      const full = value.replace(/\\/g, "/").replace(/\/+$/, "");
+      const windows = /^[a-z]:\//i.test(full);
+      const comparable = windows ? full.toLowerCase() : full;
+      const candidates = (Array.isArray(items) ? items : []).map((item) => {
+        const root = String(item?.path ?? "").replace(/\\/g, "/").replace(/\/+$/, "");
+        return { item, root, comparable: windows ? root.toLowerCase() : root };
+      }).filter(({ root }) => root).sort((a, b) => b.root.length - a.root.length);
+      const match = candidates.find((entry) => comparable.startsWith(`${entry.comparable}/`));
+      return match ? { root: match.item.path, path: full.slice(match.root.length + 1) } : null;
+    }
     function copyText(value) {
       if (navigator.clipboard?.writeText) return navigator.clipboard.writeText(value);
       window.prompt("复制路径：", value);
@@ -273,7 +286,7 @@ window.__ModuleLoader__.load({
       const click = () => {
         onSelect(entry);
         if (entry.directory) setExpanded((value) => !value);
-        else onOpen(entry.path);
+        else onOpen(entry.path, "preview");
       };
       const filtered = (children ?? []).filter((child) => showHidden || (!child.hidden && !forcedHidden.has(child.name)));
       return h(React.Fragment, null,
@@ -281,7 +294,7 @@ window.__ModuleLoader__.load({
           className: "dwu-treeRow", "data-active": !entry.directory && active === entry.path || undefined, "data-selected": selected === entry.path || undefined,
           "data-cut": clipboard?.root === root && clipboard.mode === "cut" && clipboard.path === entry.path || undefined,
           "data-drop": entry.directory && dropTarget === entry.path || undefined,
-          draggable: true, tabIndex: 0, onPointerDown: (event) => event.currentTarget.focus(), onClick: click, onFocus: () => onSelect(entry), title: `${entry.path}\n可拖拽移动；⌘C/⌘X/⌘V 复制、剪切、粘贴`,
+          draggable: true, tabIndex: 0, onPointerDown: (event) => event.currentTarget.focus(), onClick: click, onDoubleClick: entry.directory ? undefined : () => onOpen(entry.path, "pinned"), onFocus: () => onSelect(entry), title: entry.directory ? `${entry.path}\n单击展开；可拖拽移动；⌘C/⌘X/⌘V 复制、剪切、粘贴` : `${entry.path}\n单击预览，双击固定；可拖拽移动；⌘C/⌘X/⌘V 复制、剪切、粘贴`,
           onDragStart: (event) => onEntryDragStart(event, entry), onDragEnd: onEntryDragEnd,
           onDragEnter: entry.directory ? (event) => { event.preventDefault(); event.stopPropagation(); onDropEntry(event, entry.path, "enter"); } : undefined,
           onDragOver: entry.directory ? (event) => { event.preventDefault(); event.stopPropagation(); event.dataTransfer.dropEffect = Array.from(event.dataTransfer.types).includes("Files") ? "copy" : "move"; } : undefined,
@@ -566,9 +579,9 @@ window.__ModuleLoader__.load({
         bus.addEventListener("tree-refresh", refresh); bus.addEventListener("file-moved", moved);
         return () => { bus.removeEventListener("tree-refresh", refresh); bus.removeEventListener("file-moved", moved); };
       }, [workspace?.path]);
-      const openFile = (file) => {
+      const openFile = (file, mode = "preview") => {
         setActive(file);
-        bus.dispatchEvent(new CustomEvent("open-file", { detail: { root: workspace.path, path: file } }));
+        bus.dispatchEvent(new CustomEvent("open-file", { detail: { root: workspace.path, path: file, mode, source: "tree" } }));
       };
       const setClipboardEntry = React.useCallback((entry, mode) => {
         if (!workspace || !entry) return;
@@ -657,7 +670,7 @@ window.__ModuleLoader__.load({
           { separator: true },
           { label: "复制完整路径", icon: "⌘", action: () => copyText(absolute) }
         ] : [
-          { label: "在中间打开", icon: "↗", action: () => openFile(entry.path) },
+          { label: "在中间固定打开", icon: "↗", action: () => openFile(entry.path, "pinned") },
           { label: "添加为 AI 参考文件", icon: "+", action: () => addContext(workspace.path, entry.path) },
           { separator: true },
           { label: "复制", icon: "⌘C", action: () => setClipboardEntry(entry, "copy") },
@@ -835,61 +848,168 @@ window.__ModuleLoader__.load({
       return h("div", { className: "dwu-filePane" }, toolbar, h("div", { className: "dwu-welcome" }, h("div", { className: "dwu-welcomeCard" }, h("div", { className: "dwu-welcomeIcon" }, "◇"), h("div", { className: "dwu-welcomeTitle" }, "暂不支持内嵌预览"), h("div", { className: "dwu-welcomeText" }, "可以在左侧文件树点击 ↗，使用系统默认应用打开。"))));
     }
 
+    function TerminalPanel({ root, onClose }) {
+      const [command, setCommand] = React.useState("");
+      const [cwd, setCwd] = React.useState(root);
+      const [entries, setEntries] = React.useState([]);
+      const [running, setRunning] = React.useState(false);
+      const outputRef = React.useRef(null);
+      const inputRef = React.useRef(null);
+      React.useEffect(() => { inputRef.current?.focus(); }, []);
+      React.useEffect(() => {
+        const node = outputRef.current;
+        if (node) node.scrollTop = node.scrollHeight;
+      }, [entries]);
+      const run = async (event) => {
+        event.preventDefault();
+        const value = command.trim();
+        if (!value || running) return;
+        const id = `${Date.now()}-${Math.random()}`;
+        setCommand("");
+        setRunning(true);
+        setEntries((previous) => [...previous, { id, command: value, output: "", code: null }]);
+        try {
+          const result = await getJson(`${API}?op=terminal`, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ root, cwd, command: value })
+          });
+          if (typeof result.cwd === "string" && result.cwd) setCwd(result.cwd);
+          setEntries((previous) => previous.map((entry) => entry.id === id ? { ...entry, output: result.output, code: result.code } : entry));
+        } catch (error) {
+          setEntries((previous) => previous.map((entry) => entry.id === id ? { ...entry, output: `终端错误：${error.message}`, code: 1 } : entry));
+        } finally {
+          setRunning(false);
+          setTimeout(() => inputRef.current?.focus(), 0);
+        }
+      };
+      return h("section", { className: "dwu-terminal", "aria-label": "项目终端" },
+        h("div", { className: "dwu-terminalHead" },
+          h("span", { className: "dwu-terminalCwd", title: cwd }, cwd),
+          h("button", { type: "button", className: "dwu-terminalAction", disabled: entries.length === 0, onClick: () => setEntries([]) }, "清空"),
+          h("button", { type: "button", className: "dwu-terminalAction", "aria-label": "关闭终端", onClick: onClose }, "×")
+        ),
+        h("div", { ref: outputRef, className: "dwu-terminalOutput", role: "log", "aria-live": "polite" },
+          entries.length === 0 && h("div", { className: "dwu-terminalEntry" }, h("span", { className: "dwu-terminalPrompt" }, "❯ "), "在当前项目目录运行命令"),
+          entries.map((entry) => h("div", { key: entry.id, className: "dwu-terminalEntry" },
+            h("div", { className: "dwu-terminalCommand" }, h("span", { className: "dwu-terminalPrompt" }, "❯ "), entry.command),
+            entry.output && h("div", { className: "dwu-terminalResult", "data-error": entry.code !== null && entry.code !== 0 || undefined }, entry.output),
+            entry.code !== null && entry.code !== 0 && h("div", { className: "dwu-terminalResult", "data-error": true }, `[退出代码 ${entry.code}]`)
+          ))
+        ),
+        h("form", { className: "dwu-terminalForm", onSubmit: run },
+          h("span", { className: "dwu-terminalPrompt" }, "❯"),
+          h("input", { ref: inputRef, className: "dwu-terminalInput", value: command, disabled: running, autoComplete: "off", spellCheck: false, placeholder: running ? "命令运行中…" : "输入命令并按回车", onChange: (event) => setCommand(event.target.value) }),
+          running && h("span", { className: "dwu-terminalRunning" }, "运行中")
+        )
+      );
+    }
+
     function WorkspaceSurface({ useSessions, useWorkspaces }) {
       const { workspace } = currentWorkspace(useSessions, useWorkspaces);
       const root = workspace?.path;
       const [tabs, setTabs] = React.useState([]);
       const [active, setActive] = React.useState("");
       const [dirty, setDirty] = React.useState({});
+      const [previewTab, setPreviewTabState] = React.useState("");
+      const [terminalOpen, setTerminalOpen] = React.useState(false);
+      const tabsRef = React.useRef([]);
+      const previewTabRef = React.useRef("");
+      const dirtyRef = React.useRef({});
+      dirtyRef.current = dirty;
+      const setPreviewTab = React.useCallback((file) => {
+        previewTabRef.current = file;
+        setPreviewTabState(file);
+        if (root) saveJson(storageKey(root, "previewTab"), file);
+      }, [root]);
       React.useEffect(() => {
-        if (!root) { setTabs([]); setActive(""); return; }
+        if (!root) { tabsRef.current = []; previewTabRef.current = ""; setTabs([]); setActive(""); setPreviewTabState(""); setTerminalOpen(false); return; }
         const saved = loadJson(storageKey(root, "tabs"), []);
-        const next = Array.isArray(saved) ? saved.filter((item) => typeof item === "string").slice(0, 20) : [];
+        const existing = Array.isArray(saved) ? saved.filter((item) => typeof item === "string").slice(0, 20) : [];
+        const tabModelVersion = loadJson(storageKey(root, "tabModelVersion"), 0);
+        const next = tabModelVersion >= 2 ? existing : existing.slice(0, 1);
+        if (tabModelVersion < 2) { saveJson(storageKey(root, "tabs"), next); saveJson(storageKey(root, "tabModelVersion"), 2); }
+        const savedPreview = tabModelVersion >= 2 ? loadJson(storageKey(root, "previewTab"), "") : next[0] ?? "";
+        const restoredPreview = typeof savedPreview === "string" && next.includes(savedPreview) ? savedPreview : "";
+        tabsRef.current = next; previewTabRef.current = restoredPreview;
         setTabs(next); setActive(next[0] ?? "");
+        setPreviewTabState(restoredPreview);
+        setTerminalOpen(loadJson(storageKey(root, "terminalOpen"), false) === true);
       }, [root]);
       React.useEffect(() => {
         const listener = (event) => {
           const detail = event.detail;
           if (!detail?.root || !detail?.path || detail.root !== root) return;
-          setTabs((previous) => {
-            const next = previous.includes(detail.path) ? previous : [...previous, detail.path];
-            saveJson(storageKey(root, "tabs"), next); return next;
-          });
+          const previous = tabsRef.current;
+          let next = previous;
+          if (detail.mode === "preview") {
+            if (!previous.includes(detail.path)) {
+              const currentPreview = previewTabRef.current;
+              const replaceable = currentPreview && previous.includes(currentPreview) && !dirtyRef.current[currentPreview];
+              next = replaceable ? previous.map((file) => file === currentPreview ? detail.path : file) : [...previous, detail.path];
+              setPreviewTab(detail.path);
+            }
+          } else {
+            if (!previous.includes(detail.path)) next = [...previous, detail.path];
+            if (previewTabRef.current === detail.path) setPreviewTab("");
+          }
+          if (next !== previous) { tabsRef.current = next; setTabs(next); saveJson(storageKey(root, "tabs"), next); }
           setActive(detail.path);
-          if (detail.context !== "keep") setSingleContext(root, detail.path);
+          if (detail.source === "tree" && detail.context !== "keep") setSingleContext(root, detail.path);
         };
         bus.addEventListener("open-file", listener); return () => bus.removeEventListener("open-file", listener);
-      }, [root]);
+      }, [root, setPreviewTab]);
       React.useEffect(() => {
         const listener = (event) => {
           const detail = event.detail;
           if (!root || detail.root !== root) return;
           setTabs((previous) => {
             const next = [...new Set(previous.map((file) => remapPath(file, detail.source, detail.destination)))];
-            saveJson(storageKey(root, "tabs"), next); return next;
+            tabsRef.current = next; saveJson(storageKey(root, "tabs"), next); return next;
           });
+          if (previewTabRef.current) setPreviewTab(remapPath(previewTabRef.current, detail.source, detail.destination));
           setActive((file) => remapPath(file, detail.source, detail.destination));
           setDirty((previous) => Object.fromEntries(Object.entries(previous).map(([file, value]) => [remapPath(file, detail.source, detail.destination), value])));
         };
         bus.addEventListener("file-moved", listener); return () => bus.removeEventListener("file-moved", listener);
-      }, [root]);
+      }, [root, setPreviewTab]);
       React.useEffect(() => { if (root && active) bus.dispatchEvent(new CustomEvent("active-file", { detail: { root, path: active } })); }, [root, active]);
       const markActiveDirty = React.useCallback((value) => {
         if (!active) return;
+        if (value && previewTabRef.current === active) setPreviewTab("");
         setDirty((current) => current[active] === value ? current : { ...current, [active]: value });
-      }, [active]);
+      }, [active, setPreviewTab]);
       const close = (file) => {
         if (dirty[file] && !window.confirm(`${basename(file)} 尚未保存，仍要关闭吗？`)) return;
         setTabs((previous) => {
           const index = previous.indexOf(file); const next = previous.filter((item) => item !== file); saveJson(storageKey(root, "tabs"), next);
+          tabsRef.current = next;
+          if (previewTabRef.current === file) setPreviewTab("");
           if (active === file) setActive(next[Math.min(index, next.length - 1)] ?? ""); return next;
         });
       };
+      const setTerminal = (value) => {
+        setTerminalOpen(value);
+        if (root) saveJson(storageKey(root, "terminalOpen"), value);
+      };
+      React.useEffect(() => {
+        const onKey = (event) => {
+          if ((event.ctrlKey || event.metaKey) && event.key === "`") {
+            event.preventDefault();
+            setTerminal(!terminalOpen);
+          }
+        };
+        window.addEventListener("keydown", onKey);
+        return () => window.removeEventListener("keydown", onKey);
+      }, [terminalOpen, root]);
       if (!root) return h("div", { className: "dwu-root dwu-workspace" }, h("div", { className: "dwu-welcome" }, h("div", { className: "dwu-welcomeCard" }, h("div", { className: "dwu-welcomeIcon" }, "⌘"), h("div", { className: "dwu-welcomeTitle" }, "选择一个项目开始"), h("div", { className: "dwu-welcomeText" }, "从左侧项目栏打开文件夹；文件会在这里以标签页编辑或预览，AI 对话始终保留在右侧。"))));
       return h("div", { className: "dwu-root dwu-workspace" },
-        h("div", { className: "dwu-workHead" }, h("span", { className: "dwu-workTitle" }, workspace.title), h("span", { className: "dwu-workPath", title: root }, root)),
-        tabs.length > 0 && h("div", { className: "dwu-tabs" }, tabs.map((file) => h("button", { key: file, className: "dwu-tab", "data-active": file === active || undefined, title: file, onClick: () => setActive(file) }, h(FileIcon, { file, size: 16 }), h("span", { className: "dwu-tabName" }, basename(file)), dirty[file] ? h("span", { className: "dwu-dirty" }, "●") : null, h("span", { className: "dwu-close", onClick: (event) => { event.stopPropagation(); close(file); } }, "×")))),
-        h("div", { className: "dwu-body" }, active ? h(FilePane, { key: `${root}:${active}`, root, file: active, onDirty: markActiveDirty }) : h("div", { className: "dwu-welcome" }, h("div", { className: "dwu-welcomeCard" }, h("div", { className: "dwu-welcomeIcon" }, "⌘"), h("div", { className: "dwu-welcomeTitle" }, "文件工作区"), h("div", { className: "dwu-welcomeText" }, "从左侧文件树选择文件。支持文本与 Markdown 编辑、PDF、Word、Excel、图片和视频预览。"))))
+        h("div", { className: "dwu-workHead" }, h("span", { className: "dwu-workTitle" }, workspace.title), h("span", { className: "dwu-workPath", title: root }, root), h("button", { type: "button", className: "dwu-terminalToggle", "data-active": terminalOpen || undefined, "aria-label": "切换终端", "aria-pressed": terminalOpen, title: "切换终端（⌘/Ctrl + `）", onClick: () => setTerminal(!terminalOpen) }, h("span", { className: "dwu-terminalGlyph", "aria-hidden": true }, ">_"))),
+        tabs.length > 0 && h("div", { className: "dwu-tabs" }, tabs.map((file) => h("button", { key: file, className: "dwu-tab", "data-active": file === active || undefined, "data-preview": file === previewTab || undefined, title: file === previewTab ? `${file}\n预览标签；双击固定` : file, onClick: () => setActive(file), onDoubleClick: () => { if (previewTabRef.current === file) setPreviewTab(""); } }, h(FileIcon, { file, size: 16 }), h("span", { className: "dwu-tabName" }, basename(file)), dirty[file] ? h("span", { className: "dwu-dirty" }, "●") : null, h("span", { className: "dwu-close", onClick: (event) => { event.stopPropagation(); close(file); } }, "×")))),
+        h("div", { className: "dwu-main" },
+          h("div", { className: "dwu-body" }, active ? h(FilePane, { key: `${root}:${active}`, root, file: active, onDirty: markActiveDirty }) : h("div", { className: "dwu-welcome" }, h("div", { className: "dwu-welcomeCard" }, h("div", { className: "dwu-welcomeIcon" }, "⌘"), h("div", { className: "dwu-welcomeTitle" }, "文件工作区"), h("div", { className: "dwu-welcomeText" }, "从左侧文件树选择文件。支持文本与 Markdown 编辑、PDF、Word、Excel、图片和视频预览。")))),
+          terminalOpen && h(TerminalPanel, { key: root, root, onClose: () => setTerminal(false) })
+        )
       );
     }
 
@@ -971,6 +1091,24 @@ window.__ModuleLoader__.load({
       };
       window.__DSH_WORKSPACE_CONTEXT__ = { decorate };
       ctx.effect(() => () => { if (window.__DSH_WORKSPACE_CONTEXT__?.decorate === decorate) delete window.__DSH_WORKSPACE_CONTEXT__; }, "workspace context bridge");
+      const originalOpenPath = ctx.workspaces.openPath.__dshCockpitOriginal ?? ctx.workspaces.openPath;
+      const nativeOpenPath = (path) => originalOpenPath.call(ctx.workspaces, path);
+      const routeConversationFile = async (path) => {
+        const match = workspaceFileForHostPath(ctx.workspaces.list.getSnapshot().items, path);
+        if (match) {
+          try {
+            const stat = await getJson(apiUrl("stat", match.root, match.path));
+            if (!stat.directory) {
+              bus.dispatchEvent(new CustomEvent("open-file", { detail: { root: match.root, path: match.path, mode: "pinned", source: "ai", context: "keep" } }));
+              return;
+            }
+          } catch {}
+        }
+        return nativeOpenPath(path);
+      };
+      routeConversationFile.__dshCockpitOriginal = originalOpenPath;
+      ctx.workspaces.openPath = routeConversationFile;
+      ctx.effect(() => () => { if (ctx.workspaces.openPath === routeConversationFile) ctx.workspaces.openPath = originalOpenPath; }, "AI file tab routing");
       ctx.slots.inject("sidebar.workspaces", () => ctx.slots.register({
         name: "sidebar.workspaces",
         inject: () => ({
@@ -985,7 +1123,7 @@ window.__ModuleLoader__.load({
             const session = workspace.sessionIds.map((id) => state.byId[id]).filter(Boolean).sort((a, b) => b.updatedAt - a.updatedAt)[0];
             if (session) ctx.sessions.open(session.id); else ctx.workspaces.startSession(workspace.workspaceId);
           },
-          openPath: (path) => ctx.workspaces.openPath(path).catch(() => {}),
+          openPath: (path) => nativeOpenPath(path).catch(() => {}),
           startProjectSession: (workspaceId) => ctx.workspaces.startSession(workspaceId),
           renameProject: (workspaceId, title) => ctx.workspaces.rename(workspaceId, title),
           deleteProject: (workspaceId) => ctx.workspaces.delete(workspaceId)

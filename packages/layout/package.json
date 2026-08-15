@@ -1,6 +1,6 @@
 {
-  "name": "ethan-workbench-layout",
-  "version": "0.1.0",
+  "name": "dsh-cockpit-layout",
+  "version": "0.2.0",
   "description": "Workbench layout for DeepSeek Harness",
   "license": "MIT",
   "publishConfig": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ethan0084/ethan-workbench.git",
+    "url": "git+https://github.com/ethan0084/dsh-cockpit.git",
     "directory": "packages/layout"
   },
   "type": "module",

@@ -8,8 +8,8 @@
   disabled: true
 
 - insert:
-    - id: workbench-layout
-      name: ethan-workbench/layout
+    - id: cockpit-layout
+      name: dsh-cockpit/layout
 
-    - id: workbench-ui
-      name: ethan-workbench/ui
+    - id: cockpit-ui
+      name: dsh-cockpit/ui
