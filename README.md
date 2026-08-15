@@ -37,12 +37,39 @@ dsh --profile web
 
 安装命令会把 Cordis 配置层永久写入 `web` profile。若已有同类自定义布局，请先备份配置，避免两个布局同时启用。
 
+### 使用 Codex Skill 安装（可选）
+
+仓库提供了公开版 `dsh-install` Skill。它会从 npm 安装并验证 DSH 0.1.0-rc.6 与 Ethan Workbench 0.1.1，不包含会话、设置、项目、凭据、桌面端外壳或私人迁移数据。
+
+在 Codex 中调用 `$skill-installer`，并发送：
+
+```text
+请从 https://github.com/ethan0084/ethan-workbench/tree/main/skills/dsh-install 安装 Skill
+```
+
+也可以手动安装到个人 Skill 目录：
+
+```bash
+git clone https://github.com/ethan0084/ethan-workbench.git
+mkdir -p "$HOME/.agents/skills"
+cp -R ethan-workbench/skills/dsh-install "$HOME/.agents/skills/dsh-install"
+```
+
+安装后可在 Codex 中发送：
+
+```text
+$dsh-install 安装并启动 DSH 和 Ethan Workbench
+```
+
+Codex 通常会自动发现新安装的 Skill；若没有出现，请重启 Codex。
+
 ## 项目结构
 
 - `packages/bundle`：唯一发布入口、Cordis 配置层和打包后的内嵌组件
 - `packages/layout`：三栏工作台布局源码，替换 DSH 默认布局
 - `packages/ui`：项目、文件、预览、上下文和历史会话源码
 - `scripts/build-bundle.mjs`：发布前把布局与界面源码组装进入口包
+- `skills/dsh-install`：从公开 npm 包安装、验证和启动 DSH 工作台的 Codex Skill
 
 从 `0.1.1` 起只发布 `ethan-workbench`。布局和界面通过 `ethan-workbench/layout`、`ethan-workbench/ui` 子路径内嵌在同一个 npm 包中，避免 pnpm 隔离依赖导致 DSH 无法加载组件。
 
