@@ -6,3 +6,4 @@ dist/
 .tmp-dsh.*
 .local-test-*
 packages/bundle/embedded/
+packages/bundle/vendor/

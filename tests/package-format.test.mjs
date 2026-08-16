@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, readFile, readdir, rm } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, readdir, rm, truncate, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { createRequire } from "node:module";
 import test from "node:test";
 
 const root = path.resolve(import.meta.dirname, "..");
@@ -9,7 +10,7 @@ const read = (relative) => readFile(path.join(root, relative), "utf8");
 const json = async (relative) => JSON.parse(await read(relative));
 
 test("all published packages use the MIT License", async () => {
-  const versions = { bundle: "0.2.0", layout: "0.2.0", ui: "0.2.0" };
+  const versions = { bundle: "0.2.1", layout: "0.2.1", ui: "0.2.1" };
   for (const [name, version] of Object.entries(versions)) {
     const manifest = await json(`packages/${name}/package.json`);
     assert.equal(manifest.license, "MIT");
@@ -25,7 +26,34 @@ test("bundle exports self-contained DSH plugin entry points", async () => {
   assert.equal(manifest.exports["./ui"], "./embedded/ui/index.js");
   assert.equal(manifest.exports["./ui/package.json"], "./embedded/ui/package.json");
   assert.equal(manifest.dependencies.mammoth, "^1.10.0");
-  assert.equal(manifest.dependencies.xlsx, "^0.18.5");
+  assert.equal(manifest.dependencies.xlsx, undefined);
+  assert.ok(manifest.files.includes("vendor"));
+  const uiManifest = await json("packages/ui/package.json");
+  assert.equal(uiManifest.dependencies.xlsx, "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz");
+  const build = await read("scripts/build-bundle.mjs");
+  assert.match(build, /xlsx\/xlsx\.mjs/);
+  assert.match(build, /SHEETJS-LICENSE/);
+});
+
+test("workbook previews use the patched SheetJS release", async () => {
+  const temporaryRoot = await mkdtemp(path.join(os.tmpdir(), "dsh-cockpit-workbook-"));
+  try {
+    const { utils, write } = createRequire(path.join(root, "packages/ui/package.json"))("xlsx");
+    const { previewDocument } = await import("../packages/ui/lib/index.js");
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, utils.aoa_to_sheet([["name", "value"], ["secure", 203]]), "Sheet 1");
+    await writeFile(path.join(temporaryRoot, "sample.xlsx"), write(workbook, { type: "buffer", bookType: "xlsx" }));
+    const preview = await previewDocument(temporaryRoot, "sample.xlsx");
+    assert.equal(preview.kind, "workbook");
+    assert.equal(preview.sheets[0].name, "Sheet 1");
+    assert.match(preview.sheets[0].html, /secure/);
+    const oversized = path.join(temporaryRoot, "oversized.xlsx");
+    await writeFile(oversized, "");
+    await truncate(oversized, 25 * 1024 * 1024 + 1);
+    await assert.rejects(() => previewDocument(temporaryRoot, "oversized.xlsx"), /office-file-too-large/);
+  } finally {
+    await rm(temporaryRoot, { recursive: true, force: true });
+  }
 });
 
 test("bundle replaces the layout and disables the stock workspace", async () => {

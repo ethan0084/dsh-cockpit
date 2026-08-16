@@ -4,10 +4,13 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const embedded = path.join(root, "packages/bundle/embedded");
+const vendor = path.join(root, "packages/bundle/vendor");
 
 await rm(embedded, { recursive: true, force: true });
+await rm(vendor, { recursive: true, force: true });
 await mkdir(path.join(embedded, "layout"), { recursive: true });
 await mkdir(path.join(embedded, "ui"), { recursive: true });
+await mkdir(vendor, { recursive: true });
 
 const copyWithIds = async (source, destination, replacements) => {
   let body = await readFile(source, "utf8");
@@ -26,10 +29,16 @@ await copyWithIds(
   path.join(root, "packages/ui/lib/index.js"),
   path.join(embedded, "ui/index.js"),
   [
+    ["\"xlsx/dist/cpexcel.full.mjs\"", "\"../../vendor/cpexcel.full.mjs\""],
+    ["\"xlsx\"", "\"../../vendor/xlsx.mjs\""],
     ["id: \"dsh-cockpit-ui\"", "id: \"dsh-cockpit/ui\""],
     ["\"dsh-cockpit-layout\"", "\"dsh-cockpit/layout\""],
   ],
 );
+
+await cp(path.join(root, "packages/ui/node_modules/xlsx/xlsx.mjs"), path.join(vendor, "xlsx.mjs"));
+await cp(path.join(root, "packages/ui/node_modules/xlsx/dist/cpexcel.full.mjs"), path.join(vendor, "cpexcel.full.mjs"));
+await cp(path.join(root, "packages/ui/node_modules/xlsx/LICENSE"), path.join(vendor, "SHEETJS-LICENSE"));
 await copyWithIds(
   path.join(root, "packages/ui/lib/client.js"),
   path.join(embedded, "ui/client.js"),

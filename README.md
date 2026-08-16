@@ -33,7 +33,7 @@ dsh plugin --profile web add dsh-cockpit
 pnpm install
 pnpm test
 pnpm run pack:release
-dsh plugin --profile web add "$PWD/dist/dsh-cockpit-0.2.0.tgz"
+dsh plugin --profile web add "$PWD/dist/dsh-cockpit-0.2.1.tgz"
 dsh --profile web
 ```
 
@@ -41,7 +41,7 @@ dsh --profile web
 
 ### 使用 Codex Skill 安装（可选）
 
-仓库提供了公开版 `dsh-cockpit-install` Skill。它会从 npm 安装并验证 DSH 0.1.0-rc.6 与 DSH Cockpit 0.2.0，不包含会话、设置、项目、凭据、桌面端外壳或私人迁移数据。
+仓库提供了公开版 `dsh-cockpit-install` Skill。它会从 npm 安装并验证 DSH 0.1.0-rc.6 与 DSH Cockpit 0.2.1，不包含会话、设置、项目、凭据、桌面端外壳或私人迁移数据。
 
 在 Codex 中调用 `$skill-installer`，并发送：
 
@@ -73,7 +73,7 @@ Codex 通常会自动发现新安装的 Skill；若没有出现，请重启 Code
 - `scripts/build-bundle.mjs`：发布前把布局与界面源码组装进入口包
 - `skills/dsh-cockpit-install`：从公开 npm 包安装、验证和启动 DSH 工作台的 Codex Skill
 
-`dsh-cockpit@0.2.0` 采用单入口内嵌结构。布局和界面通过 `dsh-cockpit/layout`、`dsh-cockpit/ui` 子路径包含在同一个 npm 包中，避免 pnpm 隔离依赖导致 DSH 无法加载组件。
+`dsh-cockpit` 采用单入口内嵌结构。布局和界面通过 `dsh-cockpit/layout`、`dsh-cockpit/ui` 子路径包含在同一个 npm 包中，避免 pnpm 隔离依赖导致 DSH 无法加载组件。
 
 ## 开发与验证
 

@@ -26,3 +26,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+## SheetJS Community Edition
+
+Workbook preview uses SheetJS Community Edition 0.20.3 from the authoritative
+SheetJS CDN distribution. SheetJS is licensed under the Apache License 2.0.
+The release bundle includes the complete license at `vendor/SHEETJS-LICENSE`.
+
+Source: <https://git.sheetjs.com/SheetJS/sheetjs>
