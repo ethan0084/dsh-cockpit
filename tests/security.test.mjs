@@ -1,11 +1,94 @@
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 
 const root = path.resolve(import.meta.dirname, "..");
 const read = (relative) => readFile(path.join(root, relative), "utf8");
+
+test("symlinks cannot read or write outside the workspace", async () => {
+  const base = await mkdtemp(path.join(os.tmpdir(), "dsh-cockpit-symlink-"));
+  try {
+    const workspace = path.join(base, "workspace");
+    await mkdir(workspace);
+    const secret = path.join(base, "secret.txt");
+    await writeFile(secret, "SECRET DATA");
+    // A symlink placed inside the workspace pointing at an outside file: the
+    // lexical path stays within the root, so only realpath resolution catches it.
+    await symlink(secret, path.join(workspace, "escape.txt"));
+
+    const { readWorkspaceText, writeWorkspaceText, statWorkspaceFile } = await import("../packages/ui/lib/index.js");
+
+    await assert.rejects(() => readWorkspaceText(workspace, "escape.txt"), /path-outside-workspace/);
+    await assert.rejects(() => statWorkspaceFile(workspace, "escape.txt"), /path-outside-workspace/);
+    await assert.rejects(() => writeWorkspaceText(workspace, "escape.txt", "overwritten"), /path-outside-workspace/);
+
+    // The outside file must be untouched.
+    assert.equal(await readFile(secret, "utf8"), "SECRET DATA");
+
+    // A symlink that stays inside the workspace keeps working.
+    const inside = path.join(workspace, "real.txt");
+    await writeFile(inside, "inside data");
+    await symlink(inside, path.join(workspace, "alias.txt"));
+    const value = await readWorkspaceText(workspace, "alias.txt");
+    assert.equal(value.content, "inside data");
+  } finally {
+    await rm(base, { recursive: true, force: true });
+  }
+});
+
+test("a symlinked workspace root is still usable", async () => {
+  const base = await mkdtemp(path.join(os.tmpdir(), "dsh-cockpit-rootlink-"));
+  try {
+    const real = path.join(base, "real-workspace");
+    await mkdir(real);
+    await writeFile(path.join(real, "file.txt"), "hello");
+    const linked = path.join(base, "linked-workspace");
+    await symlink(real, linked);
+
+    // Passing the symlinked path as the root must not be mistaken for an escape.
+    const { readWorkspaceText } = await import("../packages/ui/lib/index.js");
+    const value = await readWorkspaceText(linked, "file.txt");
+    assert.equal(value.content, "hello");
+  } finally {
+    await rm(base, { recursive: true, force: true });
+  }
+});
+
+test("uploads are capped so a single request cannot fill the disk", async () => {
+  const source = await read("packages/ui/lib/index.js");
+  const upload = source.slice(source.indexOf("export async function uploadWorkspaceFile"), source.indexOf("export function assertSameOrigin"));
+  // Streaming straight to disk bypasses the readJson body cap, so uploadFile
+  // needs its own limit rather than relying on MAX_BODY_BYTES.
+  assert.match(upload, /MAX_UPLOAD_BYTES/, "uploadFile must enforce an explicit upload size cap");
+  assert.match(source, /const MAX_UPLOAD_BYTES/, "MAX_UPLOAD_BYTES must be defined");
+});
+
+test("oversized uploads are rejected and leave no partial file", async () => {
+  const { uploadWorkspaceFile, MAX_UPLOAD_BYTES } = await import("../packages/ui/lib/index.js");
+  const workspace = await mkdtemp(path.join(os.tmpdir(), "dsh-cockpit-upload-"));
+  try {
+    const { Readable } = await import("node:stream");
+    const chunk = Buffer.alloc(1024 * 1024, 0x61);
+    let sent = 0;
+    const body = new Readable({
+      read() {
+        if (sent > MAX_UPLOAD_BYTES + chunk.length) return this.push(null);
+        sent += chunk.length;
+        this.push(chunk);
+      }
+    });
+
+    await assert.rejects(() => uploadWorkspaceFile(body, workspace, "", "big.bin"), /upload-too-large/);
+
+    // Neither the final file nor the temporary artefact may survive.
+    const { readdir } = await import("node:fs/promises");
+    assert.deepEqual(await readdir(workspace), [], "no partial or temporary file may remain");
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+});
 
 test("published readme carries no hardcoded version", async () => {
   // The bundle README ships inside the npm tarball, where a version in the

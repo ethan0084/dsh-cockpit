@@ -12,9 +12,21 @@ await mkdir(path.join(embedded, "layout"), { recursive: true });
 await mkdir(path.join(embedded, "ui"), { recursive: true });
 await mkdir(vendor, { recursive: true });
 
+// Each replacement must match exactly once. A silent zero-match means the source
+// moved on and the bundle would ship unrewritten; more than one means the literal
+// is ambiguous (for example a plain "xlsx" string elsewhere in the file) and the
+// rewrite would corrupt unrelated code.
 const copyWithIds = async (source, destination, replacements) => {
   let body = await readFile(source, "utf8");
-  for (const [from, to] of replacements) body = body.replaceAll(from, to);
+  for (const [from, to] of replacements) {
+    const occurrences = body.split(from).length - 1;
+    if (occurrences !== 1) {
+      throw new Error(
+        `build-bundle: expected exactly 1 occurrence of ${JSON.stringify(from)} in ${path.relative(root, source)}, found ${occurrences}`
+      );
+    }
+    body = body.replaceAll(from, to);
+  }
   await writeFile(destination, body);
 };
 

@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { createHash, randomUUID } from "node:crypto";
 import { spawn } from "node:child_process";
 import { pipeline } from "node:stream/promises";
+import { Transform } from "node:stream";
 import mammoth from "mammoth";
 import { read as readWorkbook, set_cptable, utils as workbookUtils } from "xlsx";
 import * as spreadsheetCodepages from "xlsx/dist/cpexcel.full.mjs";
@@ -15,6 +16,9 @@ const API_PATH = "/dsh-workspace/api";
 const ASSET_PATH = "/dsh-workspace/asset";
 const MAX_TEXT_BYTES = 12 * 1024 * 1024;
 const MAX_BODY_BYTES = 14 * 1024 * 1024;
+// Uploads stream straight to disk, so they never pass through the readJson body
+// cap and need a limit of their own.
+export const MAX_UPLOAD_BYTES = 512 * 1024 * 1024;
 const MAX_OFFICE_BYTES = 25 * 1024 * 1024;
 const MAX_TERMINAL_COMMAND_BYTES = 16 * 1024;
 const MAX_TERMINAL_OUTPUT_BYTES = 1024 * 1024;
@@ -96,8 +100,38 @@ function targetFrom(rootValue, relativeValue = "") {
   return { root, target };
 }
 
-async function listDirectory(root, relative) {
-  const { target } = targetFrom(root, relative);
+function containedBy(root, target) {
+  return target === root || target.startsWith(root + path.sep);
+}
+
+// The lexical check above compares strings, so a symlink inside the workspace
+// pointing outside still passes it. Resolving both sides catches that. The root
+// itself is resolved too, so a symlinked workspace root is not mistaken for an
+// escape. Missing entries fall back to their nearest existing ancestor, which is
+// what a create still needs to be validated against.
+async function realTargetFrom(rootValue, relativeValue = "") {
+  const { root, target } = targetFrom(rootValue, relativeValue);
+  const realRoot = await fs.realpath(root);
+  let candidate = target;
+  for (;;) {
+    try {
+      const realTarget = await fs.realpath(candidate);
+      const suffix = path.relative(candidate, target);
+      const resolved = suffix ? path.join(realTarget, suffix) : realTarget;
+      if (!containedBy(realRoot, resolved)) throw new Error("path-outside-workspace");
+      return { root, target, realRoot, realTarget: resolved };
+    } catch (error) {
+      if (error?.message === "path-outside-workspace") throw error;
+      if (error?.code !== "ENOENT") throw error;
+      const parent = path.dirname(candidate);
+      if (parent === candidate) throw new Error("path-outside-workspace");
+      candidate = parent;
+    }
+  }
+}
+
+export async function listWorkspaceDirectory(root, relative) {
+  const { target } = await realTargetFrom(root, relative);
   const dirents = (await fs.readdir(target, { withFileTypes: true })).slice(0, 2000);
   const entries = await Promise.all(dirents.map(async (entry) => {
     const absolute = path.join(target, entry.name);
@@ -117,22 +151,22 @@ async function listDirectory(root, relative) {
   return entries;
 }
 
-async function readText(root, relative) {
-  const { target } = targetFrom(root, relative);
+export async function readWorkspaceText(root, relative) {
+  const { target } = await realTargetFrom(root, relative);
   const stat = await fs.stat(target);
   if (!stat.isFile()) throw new Error("not-a-file");
   if (stat.size > MAX_TEXT_BYTES) throw new Error("text-file-too-large");
   return { content: await fs.readFile(target, "utf8"), size: stat.size, mtimeMs: stat.mtimeMs };
 }
 
-async function statFile(root, relative) {
-  const { target } = targetFrom(root, relative);
+export async function statWorkspaceFile(root, relative) {
+  const { target } = await realTargetFrom(root, relative);
   const stat = await fs.stat(target);
   return { size: stat.size, mtimeMs: stat.mtimeMs, directory: stat.isDirectory() };
 }
 
 async function revealInFinder(root, relative) {
-  const { target } = targetFrom(root, relative);
+  const { target } = await realTargetFrom(root, relative);
   await fs.access(target);
   await new Promise((resolve, reject) => {
     const child = spawn("open", ["-R", target], { stdio: "ignore" });
@@ -142,10 +176,10 @@ async function revealInFinder(root, relative) {
   return { path: target };
 }
 
-async function writeText(root, relative, content, expectedMtimeMs) {
+export async function writeWorkspaceText(root, relative, content, expectedMtimeMs) {
   if (typeof content !== "string") throw new Error("invalid-content");
   if (Buffer.byteLength(content) > MAX_TEXT_BYTES) throw new Error("text-file-too-large");
-  const { target } = targetFrom(root, relative);
+  const { target } = await realTargetFrom(root, relative);
   const before = await fs.stat(target);
   if (!before.isFile()) throw new Error("not-a-file");
   if (typeof expectedMtimeMs === "number" && Math.abs(before.mtimeMs - expectedMtimeMs) > 1) {
@@ -179,10 +213,10 @@ async function uniqueTarget(directory, name) {
   throw new Error("too-many-name-conflicts");
 }
 
-async function transferEntry(rootValue, sourceValue, destinationValue, mode) {
+export async function transferWorkspaceEntry(rootValue, sourceValue, destinationValue, mode) {
   if (mode !== "copy" && mode !== "move") throw new Error("invalid-transfer-mode");
-  const sourceResult = targetFrom(rootValue, sourceValue);
-  const destinationResult = targetFrom(rootValue, destinationValue ?? "");
+  const sourceResult = await realTargetFrom(rootValue, sourceValue);
+  const destinationResult = await realTargetFrom(rootValue, destinationValue ?? "");
   if (sourceResult.target === sourceResult.root) throw new Error("cannot-transfer-workspace-root");
   const sourceStat = await fs.lstat(sourceResult.target);
   const destinationStat = await fs.stat(destinationResult.target);
@@ -202,15 +236,26 @@ async function transferEntry(rootValue, sourceValue, destinationValue, mode) {
   return { path: path.relative(sourceResult.root, finalTarget), directory: sourceStat.isDirectory() };
 }
 
-async function uploadFile(req, rootValue, destinationValue, nameValue, lastModifiedValue) {
-  const destinationResult = targetFrom(rootValue, destinationValue ?? "");
+export async function uploadWorkspaceFile(req, rootValue, destinationValue, nameValue, lastModifiedValue) {
+  const destinationResult = await realTargetFrom(rootValue, destinationValue ?? "");
   const destinationStat = await fs.stat(destinationResult.target);
   if (!destinationStat.isDirectory()) throw new Error("destination-not-directory");
   const name = safeEntryName(nameValue);
   const finalTarget = await uniqueTarget(destinationResult.target, name);
   const temporaryTarget = path.join(destinationResult.target, `.dsh-upload-${randomUUID()}.tmp`);
   try {
-    await pipeline(req, createWriteStream(temporaryTarget, { flags: "wx" }));
+    const declared = Number(req.headers?.["content-length"]);
+    if (Number.isFinite(declared) && declared > MAX_UPLOAD_BYTES) throw new Error("upload-too-large");
+    // content-length is advisory, so the byte count is enforced as the body streams.
+    let received = 0;
+    const limit = new Transform({
+      transform(chunk, _encoding, callback) {
+        received += chunk.length;
+        if (received > MAX_UPLOAD_BYTES) return callback(new Error("upload-too-large"));
+        callback(null, chunk);
+      }
+    });
+    await pipeline(req, limit, createWriteStream(temporaryTarget, { flags: "wx" }));
     await fs.rename(temporaryTarget, finalTarget);
     const lastModified = Number(lastModifiedValue);
     if (Number.isFinite(lastModified) && lastModified > 0) {
@@ -238,7 +283,7 @@ export async function runTerminalCommand(rootValue, commandValue, cwdValue = "")
   if (typeof cwdValue !== "string" || cwdValue.includes("\0")) throw new Error("invalid-terminal-cwd");
   // targetFrom rejects anything resolving outside the workspace; an absolute cwd
   // inside the root stays usable because path.resolve ignores the root argument.
-  const { target } = targetFrom(root, cwdValue);
+  const { target } = await realTargetFrom(root, cwdValue);
   const stat = await fs.stat(target);
   if (!stat.isDirectory()) throw new Error("invalid-terminal-cwd");
   if (typeof commandValue !== "string" || commandValue.trim().length === 0) throw new Error("invalid-command");
@@ -324,7 +369,7 @@ export async function runTerminalCommand(rootValue, commandValue, cwdValue = "")
 }
 
 export async function previewDocument(root, relative) {
-  const { target } = targetFrom(root, relative);
+  const { target } = await realTargetFrom(root, relative);
   const ext = path.extname(target).toLowerCase();
   const stat = await fs.stat(target);
   if (!stat.isFile()) throw new Error("not-a-file");
@@ -352,15 +397,15 @@ async function handleApi(req, res) {
   const op = url.searchParams.get("op") ?? "";
   try {
     if (req.method === "GET" && op === "list") {
-      json(res, 200, { ok: true, entries: await listDirectory(url.searchParams.get("root"), url.searchParams.get("path") ?? "") });
+      json(res, 200, { ok: true, entries: await listWorkspaceDirectory(url.searchParams.get("root"), url.searchParams.get("path") ?? "") });
       return;
     }
     if (req.method === "GET" && op === "read") {
-      json(res, 200, { ok: true, ...(await readText(url.searchParams.get("root"), url.searchParams.get("path"))) });
+      json(res, 200, { ok: true, ...(await readWorkspaceText(url.searchParams.get("root"), url.searchParams.get("path"))) });
       return;
     }
     if (req.method === "GET" && op === "stat") {
-      json(res, 200, { ok: true, ...(await statFile(url.searchParams.get("root"), url.searchParams.get("path"))) });
+      json(res, 200, { ok: true, ...(await statWorkspaceFile(url.searchParams.get("root"), url.searchParams.get("path"))) });
       return;
     }
     if (req.method === "GET" && op === "preview") {
@@ -375,18 +420,18 @@ async function handleApi(req, res) {
     if ((req.method === "PUT" || req.method === "POST") && op === "write") {
       assertSameOrigin(req);
       const body = await readJson(req);
-      json(res, 200, { ok: true, ...(await writeText(body.root, body.path, body.content, body.expectedMtimeMs)) });
+      json(res, 200, { ok: true, ...(await writeWorkspaceText(body.root, body.path, body.content, body.expectedMtimeMs)) });
       return;
     }
     if (req.method === "POST" && op === "transfer") {
       assertSameOrigin(req);
       const body = await readJson(req);
-      json(res, 200, { ok: true, ...(await transferEntry(body.root, body.source, body.destination, body.mode)) });
+      json(res, 200, { ok: true, ...(await transferWorkspaceEntry(body.root, body.source, body.destination, body.mode)) });
       return;
     }
     if (req.method === "POST" && op === "upload") {
       assertSameOrigin(req);
-      json(res, 200, { ok: true, ...(await uploadFile(req, url.searchParams.get("root"), url.searchParams.get("destination") ?? "", url.searchParams.get("name"), url.searchParams.get("lastModified"))) });
+      json(res, 200, { ok: true, ...(await uploadWorkspaceFile(req, url.searchParams.get("root"), url.searchParams.get("destination") ?? "", url.searchParams.get("name"), url.searchParams.get("lastModified"))) });
       return;
     }
     if (req.method === "POST" && op === "terminal") {
@@ -405,7 +450,7 @@ async function handleApi(req, res) {
 async function handleAsset(req, res) {
   const url = new URL(req.url ?? ASSET_PATH, "http://127.0.0.1");
   try {
-    const { target } = targetFrom(url.searchParams.get("root"), url.searchParams.get("path"));
+    const { target } = await realTargetFrom(url.searchParams.get("root"), url.searchParams.get("path"));
     const stat = await fs.stat(target);
     if (!stat.isFile()) throw new Error("not-a-file");
     const assetHeaders = assetHeadersFor(path.extname(target).toLowerCase());
