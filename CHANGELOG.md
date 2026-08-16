@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.2 - 2026-08-16
+
+安全修复版本，建议所有用户升级。
+
+- 修复终端 `cwd` 未经工作区边界校验的问题：此前传入 `../../../../etc` 之类的相对路径可在工作区外执行命令，现改为与其他接口一致使用 `targetFrom()` 校验。
+- 命令执行后上报的 `cwd` 现会被约束在工作区内，`cd /` 等操作不再能把工作区外的目录带入下一条命令。
+- 为 `reveal`、`write`、`transfer`、`upload` 补上同源校验，此前仅 `terminal` 一个接口受保护，任意网页均可跨站改写或上传工作区文件。
+- Markdown 预览的链接改为经 `safeUrl()` 过滤，阻断 `javascript:`、`data:` 等可执行协议导致的 XSS。
+- 静态资源响应增加 `X-Content-Type-Options: nosniff` 与 `Content-Security-Policy`，SVG 改为以附件形式下载，避免同源内联执行脚本。
+
 ## 0.2.1 - 2026-08-16
 
 - 将存在 CVE-2023-30533 与 CVE-2024-22363 的 npm `xlsx@0.18.5` 替换为 SheetJS 官方 CDN 发布的 `xlsx@0.20.3`，并将官方模块 vendor 到发布包以兼容 DSH 供应链策略。

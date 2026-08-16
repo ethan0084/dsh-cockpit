@@ -737,6 +737,17 @@ window.__ModuleLoader__.load({
       }
       return out + escapeHtml(source.slice(cursor)) + "\n";
     }
+    function safeUrl(value) {
+      // Browsers ignore control characters and whitespace when parsing a scheme,
+      // so strip them before testing: "java\tscript:" and " javascript:" must not pass.
+      const normalized = Array.from(String(value))
+        .filter((char) => char.charCodeAt(0) > 0x20 && !/[\s\u00a0\u200b-\u200d\ufeff]/.test(char))
+        .join("")
+        .toLowerCase();
+      const scheme = /^([a-z][a-z0-9+.-]*):/.exec(normalized);
+      if (scheme && !["http", "https", "mailto"].includes(scheme[1])) return "#";
+      return value;
+    }
     function markdownHtml(source) {
       const blocks = [];
       let value = escapeHtml(source).replace(/```([^\n]*)\n([\s\S]*?)```/g, (_, lang, code) => {
@@ -750,7 +761,7 @@ window.__ModuleLoader__.load({
         .replace(/^&gt;\s?(.+)$/gm, "<blockquote>$1</blockquote>")
         .replace(/^[-*]\s+(.+)$/gm, "<li>$1</li>")
         .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/`([^`]+)`/g, "<code>$1</code>")
-        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noreferrer">$1</a>')
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, text, href) => `<a href="${escapeHtml(safeUrl(href))}" target="_blank" rel="noreferrer">${text}</a>`)
         .split(/\n{2,}/).map((part) => /^<(h\d|pre|blockquote|li)/.test(part) || /^@@DWU_BLOCK_/.test(part) ? part : `<p>${part.replace(/\n/g, "<br>")}</p>`).join("\n");
       blocks.forEach((block, index) => { value = value.replace(`@@DWU_BLOCK_${index}@@`, block); });
       return value.replace(/(?:<li>[\s\S]*?<\/li>\s*)+/g, (list) => `<ul>${list}</ul>`);
