@@ -10,7 +10,7 @@ const read = (relative) => readFile(path.join(root, relative), "utf8");
 const json = async (relative) => JSON.parse(await read(relative));
 
 test("all published packages use the MIT License", async () => {
-  const versions = { bundle: "0.2.3", layout: "0.2.3", ui: "0.2.3" };
+  const versions = { bundle: "0.2.4", layout: "0.2.4", ui: "0.2.4" };
   for (const [name, version] of Object.entries(versions)) {
     const manifest = await json(`packages/${name}/package.json`);
     assert.equal(manifest.license, "MIT");

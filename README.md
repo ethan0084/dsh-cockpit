@@ -19,6 +19,8 @@
 - 中部预览区下方可展开项目终端，在当前项目目录运行命令并保留 `cd` 后的路径
 - 不修改 DSH 安装目录：通过 Cordis 配置层替换布局
 
+> 平台说明：终端在 Windows 与类 Unix 系统上均可用；「在 Finder 中显示」依赖 macOS 的 `open -R`，其他平台调用会失败。
+
 ## 安装
 
 已发布到 npm，只需要安装一个入口包：
@@ -27,21 +29,42 @@
 dsh plugin --profile web add dsh-cockpit
 ```
 
-从源码本地试用：
+从源码本地试用（`pack:release` 依赖 `pnpm install` 装好的 `xlsx`，请按顺序执行）：
 
 ```bash
 pnpm install
 pnpm test
 pnpm run pack:release
-dsh plugin --profile web add "$PWD/dist/dsh-cockpit-0.2.3.tgz"
+dsh plugin --profile web add "$PWD"/dist/dsh-cockpit-*.tgz
 dsh --profile web
 ```
 
 安装命令会把 Cordis 配置层永久写入 `web` profile。若已有同类自定义布局，请先备份配置，避免两个布局同时启用。
 
+### 卸载与回滚
+
+移除插件并恢复 DSH 默认布局：
+
+```bash
+dsh plugin --profile web remove dsh-cockpit
+dsh --profile web --dump-config   # 确认 ui-layout / ui-workspace 不再是 disabled
+```
+
+若只想临时停用，可直接编辑 profile 的 `cordis.patch.yml`。安装前备份 `~/.dsh/profiles/web/` 可以最快回到原状。
+
+### 故障排查
+
+| 现象 | 原因与处理 |
+| --- | --- |
+| `dsh: pnpm not found on PATH` | DSH 通过 pnpm 管理 profile 插件。用 `corepack enable pnpm` 启用即可 |
+| `ERR_PNPM_ADDING_TO_ROOT` | pnpm 10 对 workspace 根目录的保护。改为在 profile 的 `package.json` 中直接写入版本后运行 `pnpm install` |
+| `ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY` | 当前 pnpm 与建立 `node_modules` 的版本不一致。用原版本安装（本项目为 `pnpm@11.19.0`），避免整棵依赖树被重建 |
+| 页面空白或布局未替换 | 用 `dsh --profile web --dump-config` 确认 `cockpit-layout`、`cockpit-ui` 已存在且 `ui-layout`、`ui-workspace` 为 `disabled: true` |
+| 预览 DOCX/XLSX 报错 | 单个文件超过 25 MB 上限，或文件本身损坏 |
+
 ### 使用 Codex Skill 安装（可选）
 
-仓库提供了公开版 `dsh-cockpit-install` Skill。它会从 npm 安装并验证 DSH 0.1.0-rc.6 与 DSH Cockpit 0.2.3，不包含会话、设置、项目、凭据、桌面端外壳或私人迁移数据。
+仓库提供了公开版 `dsh-cockpit-install` Skill。它会从 npm 安装并验证 DSH 0.1.0-rc.6 与 DSH Cockpit，不包含会话、设置、项目、凭据、桌面端外壳或私人迁移数据。
 
 在 Codex 中调用 `$skill-installer`，并发送：
 

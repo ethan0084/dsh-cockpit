@@ -1,6 +1,6 @@
 {
   "name": "dsh-cockpit",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "A desktop-style project and AI workbench for DeepSeek Harness",
   "keywords": [
     "deepseek-harness",
@@ -49,5 +49,8 @@
   },
   "dependencies": {
     "mammoth": "^1.10.0"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }
