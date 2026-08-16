@@ -1,4 +1,4 @@
-# DSH Cockpit 0.2.1
+# DSH Cockpit 0.2.2
 
 The single installable Cordis bundle for DSH Cockpit. It embeds the layout and UI entry points, so no component packages need to be installed separately. Full documentation, source code, license, and contribution guide are available in the source repository.
 
