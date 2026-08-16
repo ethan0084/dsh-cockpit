@@ -7,6 +7,17 @@ import test from "node:test";
 const root = path.resolve(import.meta.dirname, "..");
 const read = (relative) => readFile(path.join(root, relative), "utf8");
 
+test("published readme carries no hardcoded version", async () => {
+  // The bundle README ships inside the npm tarball, where a version in the
+  // heading goes stale the moment the next release is published.
+  const readme = await read("packages/bundle/README.md");
+  assert.doesNotMatch(
+    readme.split("\n")[0],
+    /\d+\.\d+\.\d+/,
+    "bundle README heading must not pin a version; npm already shows it"
+  );
+});
+
 test("terminal cwd cannot escape the workspace root", async () => {
   const temporaryRoot = await mkdtemp(path.join(os.tmpdir(), "dsh-cockpit-escape-"));
   try {

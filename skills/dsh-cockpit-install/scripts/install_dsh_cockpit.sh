@@ -4,7 +4,7 @@ set -euo pipefail
 
 DSH_VERSION="0.1.0-rc.6"
 WEB_APP_VERSION="0.1.0-rc.6"
-COCKPIT_VERSION="0.2.2"
+COCKPIT_VERSION="0.2.3"
 MODE="check"
 TARGET_HOME="$HOME"
 EXTRA_ARGS=()

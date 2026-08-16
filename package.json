@@ -1,6 +1,6 @@
 {
   "name": "dsh-cockpit-source",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "private": true,
   "description": "Monorepo for the DSH Cockpit Cordis plugin bundle",
   "license": "MIT",

@@ -1,6 +1,6 @@
 ---
 name: dsh-cockpit-install
-description: Install, update, verify, or start DeepSeek Harness with the public DSH Cockpit plugin from npm. Use when a user asks to install DSH, install DSH Cockpit, set up the DSH web profile, replace an old private DSH restore workflow, or verify a public installation. Installs DSH 0.1.0-rc.6 and dsh-cockpit 0.2.2 without migrating sessions, settings, projects, credentials, a desktop shell, or patched dependency files.
+description: Install, update, verify, or start DeepSeek Harness with the public DSH Cockpit plugin from npm. Use when a user asks to install DSH, install DSH Cockpit, set up the DSH web profile, replace an old private DSH restore workflow, or verify a public installation. Installs DSH 0.1.0-rc.6 and dsh-cockpit 0.2.3 without migrating sessions, settings, projects, credentials, a desktop shell, or patched dependency files.
 ---
 
 # DSH Cockpit Install
@@ -21,7 +21,7 @@ Use `--target-home PATH` for an isolated test or a non-default home directory. P
 
 - `@deepseek-ai/dsh@0.1.0-rc.6`
 - `@deepseek-ai/dsh-web-app@0.1.0-rc.6`
-- `dsh-cockpit@0.2.2`
+- `dsh-cockpit@0.2.3`
 
 The installer uses public npm packages and configures only the `web` profile. It preserves other declared profile packages and approved build dependencies.
 
