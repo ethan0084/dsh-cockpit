@@ -2,7 +2,7 @@
 
 ## Supported version
 
-安全修复目前只覆盖最新发布版本。
+安全修复目前只覆盖最新发布版本。`0.2.1` 起不再使用 npm 上存在已知漏洞的 `xlsx@0.18.5`，发布包内置 SheetJS 官方 `0.20.3` 模块。
 
 ## Reporting a vulnerability
 

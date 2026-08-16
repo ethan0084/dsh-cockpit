@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1 - 2026-08-16
+
+- 将存在 CVE-2023-30533 与 CVE-2024-22363 的 npm `xlsx@0.18.5` 替换为 SheetJS 官方 CDN 发布的 `xlsx@0.20.3`，并将官方模块 vendor 到发布包以兼容 DSH 供应链策略。
+- 工作簿预览改为异步 Buffer 解析，并为 Office 预览增加 25 MB 文件大小上限。
+
 ## 0.2.0 - 2026-08-15
 
 - 项目正式更名为 DSH Cockpit；npm 入口改为 `dsh-cockpit`，安装 Skill 改为 `dsh-cockpit-install`。

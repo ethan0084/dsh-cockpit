@@ -6,12 +6,16 @@ import { createHash, randomUUID } from "node:crypto";
 import { spawn } from "node:child_process";
 import { pipeline } from "node:stream/promises";
 import mammoth from "mammoth";
-import XLSX from "xlsx";
+import { read as readWorkbook, set_cptable, utils as workbookUtils } from "xlsx";
+import * as spreadsheetCodepages from "xlsx/dist/cpexcel.full.mjs";
+
+set_cptable(spreadsheetCodepages);
 
 const API_PATH = "/dsh-workspace/api";
 const ASSET_PATH = "/dsh-workspace/asset";
 const MAX_TEXT_BYTES = 12 * 1024 * 1024;
 const MAX_BODY_BYTES = 14 * 1024 * 1024;
+const MAX_OFFICE_BYTES = 25 * 1024 * 1024;
 const MAX_TERMINAL_COMMAND_BYTES = 16 * 1024;
 const MAX_TERMINAL_OUTPUT_BYTES = 1024 * 1024;
 const TERMINAL_TIMEOUT_MS = 120 * 1000;
@@ -295,22 +299,26 @@ export async function runTerminalCommand(rootValue, commandValue, cwdValue = "")
   });
 }
 
-function previewDocument(root, relative) {
+export async function previewDocument(root, relative) {
   const { target } = targetFrom(root, relative);
   const ext = path.extname(target).toLowerCase();
+  const stat = await fs.stat(target);
+  if (!stat.isFile()) throw new Error("not-a-file");
+  if (stat.size > MAX_OFFICE_BYTES) throw new Error("office-file-too-large");
   if (ext === ".docx") {
-    return mammoth.convertToHtml({ path: target }).then((result) => ({
+    const result = await mammoth.convertToHtml({ path: target });
+    return {
       kind: "html",
       html: result.value,
       warnings: result.messages.map((message) => message.message)
-    }));
+    };
   }
   if (ext === ".xlsx" || ext === ".xls") {
-    const workbook = XLSX.readFile(target, { cellDates: true });
-    return Promise.resolve({
+    const workbook = readWorkbook(await fs.readFile(target), { type: "buffer", cellDates: true });
+    return {
       kind: "workbook",
-      sheets: workbook.SheetNames.map((name) => ({ name, html: XLSX.utils.sheet_to_html(workbook.Sheets[name], { id: `sheet-${name}` }) }))
-    });
+      sheets: workbook.SheetNames.map((name) => ({ name, html: workbookUtils.sheet_to_html(workbook.Sheets[name], { id: `sheet-${name}` }) }))
+    };
   }
   throw new Error("preview-not-supported");
 }
