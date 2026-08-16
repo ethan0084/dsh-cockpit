@@ -7,6 +7,52 @@ import test from "node:test";
 const root = path.resolve(import.meta.dirname, "..");
 const read = (relative) => readFile(path.join(root, relative), "utf8");
 
+test("filesystem access resolves symlinks rather than trusting the lexical check", async () => {
+  // targetFrom only compares path strings, so reaching the filesystem through it
+  // reopens the symlink escape. realTargetFrom is the only safe entry point, and
+  // this guards the next person who adds an endpoint against picking the wrong one.
+  const source = await read("packages/ui/lib/index.js");
+  const lines = source.split("\n");
+
+  const allowed = new Set([
+    // The definition itself, which layers the realpath check on top.
+    "  const { root, target } = targetFrom(rootValue, relativeValue);",
+    // Normalising the workspace root only; the real target is resolved below it.
+    '  const { root } = targetFrom(rootValue, "");'
+  ]);
+
+  const offenders = lines
+    .map((line, index) => ({ line: line.trimEnd(), number: index + 1 }))
+    .filter(({ line }) => /(?<!real)targetFrom\(/.test(line))
+    .filter(({ line }) => !line.startsWith("function targetFrom("))
+    .filter(({ line }) => !allowed.has(line));
+
+  assert.deepEqual(
+    offenders,
+    [],
+    `these call sites must use realTargetFrom:\n${offenders.map((o) => `  line ${o.number}: ${o.line}`).join("\n")}`
+  );
+});
+
+test("every workspace filesystem helper goes through realTargetFrom", async () => {
+  const source = await read("packages/ui/lib/index.js");
+  // Each exported helper that touches user files must resolve the real path.
+  for (const name of [
+    "listWorkspaceDirectory",
+    "readWorkspaceText",
+    "statWorkspaceFile",
+    "writeWorkspaceText",
+    "transferWorkspaceEntry",
+    "uploadWorkspaceFile",
+    "previewDocument"
+  ]) {
+    const start = source.indexOf(`export async function ${name}(`);
+    assert.notEqual(start, -1, `${name} must exist and be exported`);
+    const body = source.slice(start, source.indexOf("\n}\n", start));
+    assert.match(body, /realTargetFrom\(/, `${name} must resolve paths with realTargetFrom`);
+  }
+});
+
 test("symlinks cannot read or write outside the workspace", async () => {
   const base = await mkdtemp(path.join(os.tmpdir(), "dsh-cockpit-symlink-"));
   try {

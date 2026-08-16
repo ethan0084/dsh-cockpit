@@ -91,6 +91,10 @@ async function readJson(req) {
   return JSON.parse(Buffer.concat(chunks).toString("utf8"));
 }
 
+// Lexical containment check only: it compares resolved path strings and cannot
+// see through symlinks. Do not reach the filesystem with its result — call
+// realTargetFrom instead, which layers a realpath check on top. A test in
+// tests/security.test.mjs fails the build if a new call site gets this wrong.
 function targetFrom(rootValue, relativeValue = "") {
   if (typeof rootValue !== "string" || !path.isAbsolute(rootValue)) throw new Error("invalid-root");
   if (typeof relativeValue !== "string" || relativeValue.includes("\0")) throw new Error("invalid-path");
