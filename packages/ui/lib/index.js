@@ -48,6 +48,23 @@ const contentTypes = new Map([
   [".m4a", "audio/mp4"]
 ]);
 
+// SVG is an executable document type: served inline from the same origin it can
+// run script against the workspace API, so it is downgraded to a download.
+const inlineUnsafeTypes = new Set([".svg"]);
+
+export function assetHeadersFor(extension) {
+  const declared = contentTypes.get(extension) ?? "application/octet-stream";
+  const unsafe = inlineUnsafeTypes.has(extension);
+  const headers = {
+    "content-type": unsafe ? "application/octet-stream" : declared,
+    "x-content-type-options": "nosniff",
+    "content-security-policy": "default-src 'none'; sandbox",
+    "cache-control": "private, max-age=0"
+  };
+  if (unsafe) headers["content-disposition"] = "attachment";
+  return headers;
+}
+
 function json(res, status, value) {
   const body = JSON.stringify(value);
   res.writeHead(status, {
@@ -208,7 +225,7 @@ async function uploadFile(req, rootValue, destinationValue, nameValue, lastModif
   return { path: path.relative(destinationResult.root, finalTarget), size: stat.size, mtimeMs: stat.mtimeMs };
 }
 
-function assertSameOrigin(req) {
+export function assertSameOrigin(req) {
   const site = req.headers["sec-fetch-site"];
   if (typeof site === "string" && site !== "same-origin" && site !== "none") throw new Error("cross-origin-request");
   const origin = req.headers.origin;
@@ -219,7 +236,9 @@ function assertSameOrigin(req) {
 export async function runTerminalCommand(rootValue, commandValue, cwdValue = "") {
   const { root } = targetFrom(rootValue, "");
   if (typeof cwdValue !== "string" || cwdValue.includes("\0")) throw new Error("invalid-terminal-cwd");
-  const target = cwdValue ? path.resolve(root, cwdValue) : root;
+  // targetFrom rejects anything resolving outside the workspace; an absolute cwd
+  // inside the root stays usable because path.resolve ignores the root argument.
+  const { target } = targetFrom(root, cwdValue);
   const stat = await fs.stat(target);
   if (!stat.isDirectory()) throw new Error("invalid-terminal-cwd");
   if (typeof commandValue !== "string" || commandValue.trim().length === 0) throw new Error("invalid-command");
@@ -282,7 +301,12 @@ export async function runTerminalCommand(rootValue, commandValue, cwdValue = "")
       const markerIndex = stdout.lastIndexOf(cwdMarker);
       if (markerIndex >= 0) {
         const reported = stdout.slice(markerIndex + cwdMarker.length).split(/\r?\n/, 1)[0].trim();
-        if (path.isAbsolute(reported)) cwd = path.resolve(reported);
+        // The command may cd anywhere; only adopt the reported directory when it
+        // stays inside the workspace, otherwise fall back to the starting cwd.
+        if (path.isAbsolute(reported)) {
+          const resolved = path.resolve(reported);
+          if (resolved === root || resolved.startsWith(root + path.sep)) cwd = resolved;
+        }
         stdout = stdout.slice(0, markerIndex).replace(/\r?\n$/, "");
       }
       let output = stdout + (stdout && stderr && !/\r?\n$/.test(stdout) ? "\n" : "") + stderr;
@@ -344,20 +368,24 @@ async function handleApi(req, res) {
       return;
     }
     if (req.method === "POST" && op === "reveal") {
+      assertSameOrigin(req);
       json(res, 200, { ok: true, ...(await revealInFinder(url.searchParams.get("root"), url.searchParams.get("path"))) });
       return;
     }
     if ((req.method === "PUT" || req.method === "POST") && op === "write") {
+      assertSameOrigin(req);
       const body = await readJson(req);
       json(res, 200, { ok: true, ...(await writeText(body.root, body.path, body.content, body.expectedMtimeMs)) });
       return;
     }
     if (req.method === "POST" && op === "transfer") {
+      assertSameOrigin(req);
       const body = await readJson(req);
       json(res, 200, { ok: true, ...(await transferEntry(body.root, body.source, body.destination, body.mode)) });
       return;
     }
     if (req.method === "POST" && op === "upload") {
+      assertSameOrigin(req);
       json(res, 200, { ok: true, ...(await uploadFile(req, url.searchParams.get("root"), url.searchParams.get("destination") ?? "", url.searchParams.get("name"), url.searchParams.get("lastModified"))) });
       return;
     }
@@ -380,7 +408,7 @@ async function handleAsset(req, res) {
     const { target } = targetFrom(url.searchParams.get("root"), url.searchParams.get("path"));
     const stat = await fs.stat(target);
     if (!stat.isFile()) throw new Error("not-a-file");
-    const type = contentTypes.get(path.extname(target).toLowerCase()) ?? "application/octet-stream";
+    const assetHeaders = assetHeadersFor(path.extname(target).toLowerCase());
     const range = req.headers.range;
     if (range) {
       const match = /^bytes=(\d*)-(\d*)$/.exec(range);
@@ -397,20 +425,18 @@ async function handleAsset(req, res) {
         return;
       }
       res.writeHead(206, {
-        "content-type": type,
+        ...assetHeaders,
         "content-length": end - start + 1,
         "content-range": `bytes ${start}-${end}/${stat.size}`,
-        "accept-ranges": "bytes",
-        "cache-control": "private, max-age=0"
+        "accept-ranges": "bytes"
       });
       createReadStream(target, { start, end }).pipe(res);
       return;
     }
     res.writeHead(200, {
-      "content-type": type,
+      ...assetHeaders,
       "content-length": stat.size,
-      "accept-ranges": "bytes",
-      "cache-control": "private, max-age=0"
+      "accept-ranges": "bytes"
     });
     createReadStream(target).pipe(res);
   } catch (error) {
